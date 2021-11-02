@@ -3,8 +3,8 @@
 namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Components\Grid\SortEdit;
-use App\Models\HomeColumn;
-use App\Models\HomeColumnIds;
+use Andruby\HomeConfig\Models\HomeColumn;
+use Andruby\HomeConfig\Models\HomeColumnIds;
 use Illuminate\Support\Facades\DB;
 use SmallRuralDog\Admin\Components\Widgets\Card;
 use Andruby\DeepAdmin\Controllers\ContentController;

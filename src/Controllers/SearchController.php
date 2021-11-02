@@ -3,7 +3,7 @@
 namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Components\Grid\SortUpDown;
-use App\Models\Search;
+use Andruby\HomeConfig\Models\Search;
 use SmallRuralDog\Admin\Controllers\AdminController;
 use SmallRuralDog\Admin\Form;
 use SmallRuralDog\Admin\Grid;
