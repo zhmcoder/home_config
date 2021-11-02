@@ -16,7 +16,7 @@ class AppInfoController extends ContentController
         $grid->editDialogForm($this->form(true)->isDialog()->className('p-15'));
 
         $grid->toolbars(function (Grid\Toolbars $toolbars) {
-            $toolbars->createButton()->content("添加应用1");
+            $toolbars->createButton()->content("添加应用");
         })->actions(function (Grid\Actions $actions) {
             $actions->setDeleteAction(new Grid\Actions\DeleteDialogAction())->params('entity_id=8');
         });

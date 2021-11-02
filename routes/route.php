@@ -13,5 +13,9 @@ Route::group([
     $router->resource('search/list', 'SearchController')->names('search.list');
     $router->resource('app/info', 'AppInfoController')->names('app.info');
 
+    $router->get('home/column/relation_grid/{home_column_id}', 'HomeColumnController@relation_grid')->name('home.column.relation_grid');
+    $router->get('home/column/relation', 'HomeColumnController@relation')->name('home.category.info');
+    $router->resource('home/column', 'HomeColumnController')->names('home.column');
+
 });
 
