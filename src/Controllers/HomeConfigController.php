@@ -2,114 +2,185 @@
 
 namespace Andruby\HomeConfig\Controllers;
 
+use Andruby\DeepAdmin\Components\Grid\SortEdit;
+use Andruby\HomeConfig\Models\HomeItems;
+use Andruby\HomeConfig\Models\HomeConfigIds;
+use Illuminate\Support\Facades\DB;
+use SmallRuralDog\Admin\Components\Widgets\Card;
 use Andruby\DeepAdmin\Controllers\ContentController;
-use Andruby\DeepAdmin\Models\EntityField;
-use App\Models\Goods;
-use Andruby\HomeConfig\Models\HomeConfig;
-use Andruby\HomeConfig\Models\Shop;
-use SmallRuralDog\Admin\Components\Attrs\SelectOption;
-use SmallRuralDog\Admin\Components\Form\CSwitch;
-use SmallRuralDog\Admin\Components\Form\Input;
-use SmallRuralDog\Admin\Components\Form\RadioGroup;
-use SmallRuralDog\Admin\Components\Form\Select;
-use SmallRuralDog\Admin\Components\Form\Upload;
-use SmallRuralDog\Admin\Components\Form\WangEditor;
-use SmallRuralDog\Admin\Components\Grid\Boole;
-use SmallRuralDog\Admin\Components\Grid\Image;
-use SmallRuralDog\Admin\Form;
 use SmallRuralDog\Admin\Grid;
+use Andruby\DeepAdmin\Models\Content;
+use SmallRuralDog\Admin\Layout\Row;
+use Illuminate\Database\Query\JoinClause;
 
+// 货架关联
 class HomeConfigController extends ContentController
 {
-    public function grid()
+    protected function grid_action(Grid\Actions $actions)
     {
-        $config_type = request('config_type', 2);
-        $name = HomeConfig::CONFIG_TYPE[$config_type];
+        $row = $actions->getRow();
 
-        $grid = new Grid(new HomeConfig());
-        $grid->model()->where('config_type', $config_type);
+        $title = HomeItems::SHELF_TYPE[$row['shelf_type']];
+        $actions->add(Grid\Actions\ActionButton::make('关联' . $title)
+            ->handler(Grid\Actions\ActionButton::HANDLER_ROUTE)
+            ->uri('/home/column/relation_grid/{id}?shelf_type=' . $row['shelf_type'] . '&timestamp=' . time()));
 
-        $grid->addDialogForm($this->form()->actionParams(['config_type' => $config_type])->isDialog()->className('p-15'), '1000px');
-        $grid->editDialogForm($this->form(true)->actionParams(['config_type' => $config_type])->isDialog()->className('p-15'), '1000px');
+        $actions->setDeleteAction(new Grid\Actions\DeleteDialogAction())->params('entity_id=9');
+    }
 
-        $grid->pageBackground()
-            ->defaultSort('id', 'desc')
-            ->quickSearch(['title'])
-            ->stripe(true)
-            ->fit(true)
-            ->defaultSort('id', 'desc')
-            ->perPage(env('PER_PAGE', 15))
-            ->size(env('TABLE_SIZE', ''))
-            ->border(env('TABLE_BORDER', false))
-            ->emptyText("暂无数据");
+    public function relation_grid(\SmallRuralDog\Admin\Layout\Content $content, $home_column_id = null)
+    {
+        $grid_type = request('grid_type');
+        $shelf_type = request('shelf_type');
 
-        $grid->column("id", "序号")->width(80)->align('center')->sortable();
+        $grid_left = $this->column_grid(1, $home_column_id, $shelf_type);
+        $grid_right = $this->column_grid(2, $home_column_id, $shelf_type);
 
-        $grid->column("title", "标题")->sortable();
+        $homeColumnInfo = HomeItems::query()->find($home_column_id);
 
-        $grid->column("thumb", $name)->component(
-            Image::make()->size(50, 50)->preview()
-        )->width(150)->align("center");
-
-        $grid->column("is_show", "是否显示")->component(Boole::make())->width(150);
-
-        $fields = EntityField::query()->find(291);
-        $option = $this->_selectOptionList($fields);
-        $grid->column('jump_type', '跳转类型')->customValue(function ($row, $value) use ($option) {
-            return $option['option'][$value] ?? '';
+        $content->row(function (Row $row) use ($grid_left, $grid_right, $homeColumnInfo) {
+            $row->gutter(0)->className('mt-10');
+            $row->column(12, Card::make()->header('货架：' . $homeColumnInfo['name'] . '，已关联内容')->bodyStyle('padding:0px;margin_left:100px;')->content(
+                $grid_left
+            ));
+            $row->column(12, Card::make()->header('列表')->bodyStyle('padding:0px;')->content(
+                $grid_right
+            ));
         });
+        if ($grid_type == 1) {
+            return $this->isGetData() ? $grid_left : $content;
+        } else {
+            return $this->isGetData() ? $grid_right : $content;
+        }
+    }
 
-        $grid->toolbars(function (Grid\Toolbars $toolbars) use ($name) {
-            $toolbars->createButton()->content("添加" . $name);
-        });
+    private function column_grid($grid_type, $home_column_id, $shelf_type)
+    {
+        if ($grid_type == 1) {
+            $grid = new Grid(new Content('home_column_ids'));
+
+            if ($shelf_type == 1) {
+                $grid->model()->where('home_column_id', $home_column_id)->where('shelf_type', $shelf_type)
+                    ->join('home_configs', function (JoinClause $join) {
+                        $join->on('home_column_ids.column_id', '=', 'home_configs.id')->where('config_type', 1);
+                    })->select(['home_column_ids.id as id', 'home_column_ids.sort as sort', 'home_configs.title as name']);
+            } else if ($shelf_type == 2) {
+                $grid->model()->where('home_column_id', $home_column_id)->where('shelf_type', $shelf_type)
+                    ->join('home_configs', function (JoinClause $join) {
+                        $join->on('home_column_ids.column_id', '=', 'home_configs.id')->where('config_type', 2);
+                    })->select(['home_column_ids.id as id', 'home_column_ids.sort as sort', 'home_configs.title as name']);
+            } else if ($shelf_type == 3) {
+                $grid->model()->where('home_column_id', $home_column_id)->where('shelf_type', $shelf_type)
+                    ->join('goods', function (JoinClause $join) {
+                        $join->on('home_column_ids.column_id', '=', 'goods.id')->where('on_shelf', 1);
+                    })->select(['home_column_ids.id as id', 'home_column_ids.sort as sort', 'goods.name as name']);
+            }
+
+            $grid->defaultSort('sort', 'asc');
+            $grid->column('id', "ID")->width(80)->sortable();
+
+        } else if ($grid_type == 2) {
+            if ($shelf_type == 1) {
+                $grid = new Grid(new Content('home_configs'));
+                $grid->model()->where('config_type', 1)->select(['id', 'title as name']);
+            } else if ($shelf_type == 2) {
+                $grid = new Grid(new Content('home_configs'));
+                $grid->model()->where('config_type', 2)->select(['id', 'title as name']);
+            } else if ($shelf_type == 3) {
+                $grid = new Grid(new Content('goods'));
+                $grid->model()->where('on_shelf', 1)->select(['id', 'name']);
+            }
+        }
+        $grid->autoHeight();
+        $grid->quickSearch(['name'])->quickSearchPlaceholder("名称");
+
+        $grid->column('name', "名称")->sortable();
+        if ($grid_type == 1) {
+            $grid->column('sort', '排序')->component(
+                SortEdit::make()->action(config('admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=55')
+            )->width(100)->sortable();
+        }
+
+        $grid->toolbars(function (Grid\Toolbars $toolbars) {
+            $toolbars->hideCreateButton();
+        })->actions(function (Grid\Actions $actions) use ($grid_type, $home_column_id, $shelf_type) {
+            $actions->hideDeleteAction()->hideEditAction();
+
+            $row = $actions->getRow();
+            $isAction = false;
+
+            if ($grid_type == 1) {
+                $op_name = '取消关联';
+            } else {
+                if (isset($row['home_column_id'])) {
+                    $isAction = true;
+                    $op_name = '已关联';
+                } else {
+                    $op_name = '关联';
+                }
+            }
+
+            $actions->add(Grid\Actions\ActionButton::make($op_name)->order(3)
+                ->beforeEmit("tableSetLoading", true)
+                ->successEmit("tableReload")
+                ->afterEmit("tableSetLoading", false)
+                ->handler(Grid\Actions\ActionButton::HANDLER_REQUEST)
+                ->uri('/admin-api/home/column/relation?grid_type=' . $grid_type . '&shelf_type=' . $shelf_type . '&home_column_id=' . $home_column_id . '&column_id={id}')
+                ->disabled($isAction)
+                ->message('确认' . $op_name)
+            );
+
+        })->actionWidth(30);
+
+        $grid->dataUrl("admin-api/home/column/relation_grid/{$home_column_id}?grid_type=" . $grid_type);
 
         return $grid;
     }
 
-    public function form($isEdit = false)
+    public function relation()
     {
-        $config_type = request('config_type', 2);
-        $name = HomeConfig::CONFIG_TYPE[$config_type];
+        $grid_type = request('grid_type');
+        $shelf_type = request('shelf_type');
+        $home_column_id = request('home_column_id');
+        $column_id = request('column_id');
 
-        $form = new Form(new HomeConfig());
-        $form->getActions()->buttonCenter();
+        if (empty($grid_type) || empty($home_column_id) || empty($column_id)) {
+            return \Admin::responseError('关联失败，参数异常');
+        }
 
-        $form->item("title", "标题")->required()->inputWidth(8);
+        if ($grid_type == 1) {
+            DB::table('home_column_ids')
+                ->where('home_column_id', $home_column_id)
+                ->where('shelf_type', $shelf_type)
+                ->where('id', $column_id)
+                ->delete();
+            $data['action']['emit'] = 'tableReload';
+            return \Admin::response($data, '取消关联成功');
+        } else if ($grid_type == 2) {
+            $count = DB::table('home_column_ids')
+                ->where('home_column_id', $home_column_id)
+                ->where('shelf_type', $shelf_type)
+                ->where('column_id', $column_id)
+                ->count('id');
 
-        $form->item("thumb", $name)->required()->component(
-            Upload::make()->width(80)->height(80)
-        )->help('建议图片大小: 50*50, 圆形');
-
-        $form->item("is_show", "是否显示")->inputWidth(10)->component(CSwitch::make());
-
-        $fields = EntityField::query()->find(291);
-        $option = $this->_radio($fields);
-        $form->item("jump_type", "跳转类型")->component(
-            RadioGroup::make(0, $option)
-        )->required(true, 'integer');
-
-        $form->item('content', 'H5详情')->component(
-            WangEditor::make()->uploadImgServer($this->uploadImages)->uploadFileName('file')->style('min-height:300px;')
-        )->inputWidth(15)->vif('jump_type', 0);
-
-        $form->item('h5_url', 'H5链接')->component(
-            Input::make()->textarea(4)->showWordLimit()
-        )->inputWidth(15)->vif('jump_type', 3);
-
-        $form->item('relation_id', "商品")->required(true, 'integer')->serveRules("min:1")->component(Select::make(null)->filterable()->options(function () {
-            return Goods::query()->orderByDesc('id')->where('on_shelf', 1)->get()->map(function ($item) {
-                return SelectOption::make($item->id, $item->name);
-            })->all();
-        }))->vif('jump_type', 1);
-
-        $form->item('relation_id', "店铺")->required(true, 'integer')->serveRules("min:1")->component(Select::make(null)->filterable()->options(function () {
-            return Shop::query()->orderByDesc('id')->get()->map(function ($item) {
-                return SelectOption::make($item->id, $item->name);
-            })->all();
-        }))->vif('jump_type', 2);
-
-        $form->item('config_type', 'config_type')->hideLabel()->component(Input::make($config_type)->type('hidden'));
-
-        return $form;
+            if ($count > 0) {
+                return \Admin::responseError('已关联');
+            } else {
+                $item['home_column_id'] = $home_column_id;
+                $item['column_id'] = $column_id;
+                $item['shelf_type'] = $shelf_type;
+                $item['updated_at'] = date('Y-m-d H:i:s', time());
+                $item['created_at'] = date('Y-m-d H:i:s', time());
+                $id = HomeConfigIds::insertGetId($item);
+                if ($id) {
+                    $data['action']['emit'] = 'tableReload';
+                    return \Admin::response($data, '关联成功');
+                } else {
+                    return \Admin::responseError('关联失败，操作异常');
+                }
+            }
+        }
+        return \Admin::responseError('操作异常');
     }
 }
+

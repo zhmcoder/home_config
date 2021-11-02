@@ -9,13 +9,13 @@ Route::group([
     'middleware' => config('admin.route.middleware')
 ], function (Router $router) {
     // 首页配置
-    $router->resource('home/config', 'HomeConfigController')->names('home.config');
+    $router->resource('home/items', 'HomeItemController')->names('home.items');
     $router->resource('search/list', 'SearchController')->names('search.list');
     $router->resource('app/info', 'AppInfoController')->names('app.info');
 
-    $router->get('home/column/relation_grid/{home_column_id}', 'HomeColumnController@relation_grid')->name('home.column.relation_grid');
-    $router->get('home/column/relation', 'HomeColumnController@relation')->name('home.category.info');
-    $router->resource('home/column', 'HomeColumnController')->names('home.column');
+    $router->get('home/config/relation_grid/{home_column_id}', 'HomeColumnController@relation_grid')->name('home.config.relation_grid');
+    $router->get('home/config/relation', 'HomeConfigController@relation')->name('home.config.relation');
+    $router->resource('home/config', 'HomeConfigController')->names('home.config');
 
 });
 
