@@ -25,7 +25,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Andruby\\ApiToken": "src"
+            "Andruby\\HomeConfig\\": "src"
         }
     },
     "autoload-dev": {

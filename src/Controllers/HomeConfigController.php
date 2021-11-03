@@ -3,6 +3,7 @@
 namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Components\Grid\SortEdit;
+use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeItems;
 use Andruby\HomeConfig\Models\HomeConfigIds;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,7 @@ class HomeConfigController extends ContentController
     {
         $row = $actions->getRow();
 
-        $title = HomeItems::SHELF_TYPE[$row['shelf_type']];
+        $title = HomeConfig::SHELF_TYPE[$row['shelf_type']];
         $actions->add(Grid\Actions\ActionButton::make('关联' . $title)
             ->handler(Grid\Actions\ActionButton::HANDLER_ROUTE)
             ->uri('/home/column/relation_grid/{id}?shelf_type=' . $row['shelf_type'] . '&timestamp=' . time()));

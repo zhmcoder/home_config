@@ -10,6 +10,11 @@ use SmallRuralDog\Admin\Grid;
 
 class AppInfoController extends ContentController
 {
+    protected function getTableName()
+    {
+        return 'app_infos';
+    }
+
     protected function grid_list(Grid $grid)
     {
         $grid->addDialogForm($this->form()->isDialog()->className('p-15'));
