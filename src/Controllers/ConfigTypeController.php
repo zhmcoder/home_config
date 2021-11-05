@@ -5,7 +5,8 @@ namespace Andruby\HomeConfig\Controllers;
 use Andruby\DeepAdmin\Controllers\ContentController;
 use Andruby\DeepAdmin\Models\Entity;
 use Andruby\DeepAdmin\Models\EntityField;
-use Andruby\HomeConfig\Models\ConfigType;
+use Andruby\HomeConfig\Models\HomeConfig;
+use Andruby\HomeConfig\Models\HomeConfigType;
 use Andruby\HomeConfig\Models\HomeItems;
 use App\Models\AppInfo;
 use App\Models\Goods;
@@ -24,13 +25,27 @@ use SmallRuralDog\Admin\Grid;
 
 class ConfigTypeController extends ContentController
 {
-
     public function grid()
     {
-        $grid = new Grid(new ConfigType());
+        $config_type = request('config_type', 1);
+        $grid = new Grid(new HomeConfigType());
+        $grid->model()->where('config_type', $config_type);
+        $grid->addDialogForm($this->form()->isDialog()->className('p-15'), '800px');
+        $grid->editDialogForm($this->form(true)->isDialog()->className('p-15'), '800px');
+        $grid->actions(function (Grid\Actions $actions) use ($config_type) {
+            $row = $actions->getRow();
 
-        $grid->addDialogForm($this->form()->isDialog()->className('p-15'), '1000px');
-        $grid->editDialogForm($this->form(true)->isDialog()->className('p-15'), '1000px');
+//            $actions->setDeleteAction(new Grid\Actions\DeleteDialogAction());
+
+            if ($config_type == HomeConfigType::CONFIG_TYPE_HOME_STYLE) {
+                $actions->add(Grid\Actions\ActionButton::make('数据管理')
+                    ->handler(Grid\Actions\ActionButton::HANDLER_ROUTE)
+                    ->uri('/home/item?config_id=' . $row['id'] . '&timestamp=' . time()));
+            }
+
+
+        })->actionWidth(100)->actionFixed('right');
+
 
         $grid->pageBackground()
             ->defaultSort('id', 'desc')
@@ -45,34 +60,47 @@ class ConfigTypeController extends ContentController
 
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
         $grid->column("name", "类型名称");
-        $grid->column('form_type', '表单类型')->width(150);
+        if ($config_type == HomeConfigType::CONFIG_TYPE_ITEM_JUMP) {
+            $grid->column('config_value', '类型值')->width(150);
+        }
+
 
         return $grid;
     }
 
     public function form($isEdit = false)
     {
-        $form = new Form(new ConfigType());
+        $config_type = request('config_type', 1);
+        $form = new Form(new HomeConfigType());
         $form->getActions()->buttonCenter();
+        if ($config_type == HomeConfigType::CONFIG_TYPE_ITEM_JUMP) {
+            $form->item("name", "跳转类型")->required()->inputWidth(8);
+            $form->item("config_value", "类型值")->required()->inputWidth(8);
+            $formType = config('home_config.form_type');
+            $form->item('form_type', '表单类型')
+                ->help('下拉选择（远程搜索）、下拉选择（多选，远程搜索）只支持行内展示')
+                ->component(
+                    Select::make()
+                        ->filterable()
+                        ->options(function () use ($formType) {
+                            $return = [];
+                            foreach ($formType as $key => $val) {
+                                $return[] = SelectOption::make($key, $val);
+                            }
+                            return $return;
+                        })
+                );
+            $form->item("table_info", "配置项关联表")->component(
+                Input::make()->textarea(5)->placeholder('对于表单类型为单选框、多选框、下拉选择的，需在此配置对应参数。参数格式为：key=value，多个以换行分隔。也可以填写自定义的函数名称，函数名称需以getFormItemsFrom开头，返回值需与前述数据格式一致。对于下拉选择远程搜索表单类型、短文本（input，自动完成）表单类型，需在此填写后端接口URL地址，接口返回数据格式可参考文档说明。')
+            );
+        } else {
+            $form->item("name", "样式名称")->required()->inputWidth(8);
 
-        $form->item("name", "类型名称")->required()->inputWidth(8);
-        $formType = config('deep_admin.form_type');
-        $form->item('form_type', '表单类型')
-            ->help('下拉选择（远程搜索）、下拉选择（多选，远程搜索）只支持行内展示')
-            ->component(
-                Select::make()
-                    ->filterable()
-                    ->options(function () use ($formType) {
-                        $return = [];
-                        foreach ($formType as $key => $val) {
-                            $return[] = SelectOption::make($key, $val);
-                        }
-                        return $return;
-                    })
-            )->required();
-        $form->item("table_info", "配置项关联表")->component(
-            Input::make()->textarea(5)->placeholder('对于表单类型为单选框、多选框、下拉选择的，需在此配置对应参数。参数格式为：key=value，多个以换行分隔。也可以填写自定义的函数名称，函数名称需以getFormItemsFrom开头，返回值需与前述数据格式一致。对于下拉选择远程搜索表单类型、短文本（input，自动完成）表单类型，需在此填写后端接口URL地址，接口返回数据格式可参考文档说明。')
-        )->required(true, 'integer');
+        }
+
+        $form->item('config_type', '')->component(
+            Input::make($config_type)->type('hidden')
+        )->hideLabel();
 
         return $form;
     }

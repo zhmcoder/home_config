@@ -21,6 +21,13 @@ return [
 
     'multi_login' => false,
 
-    'token_expire_time' => 3 * 30 * 24 * 60 * 60
+    'token_expire_time' => 3 * 30 * 24 * 60 * 60,
 
+    // 表单类型
+    'form_type' => [
+        'input' => '输入框',
+        'textArea' => '长文本（textarea）',
+        'wangEditor' => '富文本编辑器',
+        'selectTable' => '下拉单选（连表查询）'
+    ]
 ];

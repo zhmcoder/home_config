@@ -5,7 +5,7 @@ namespace Andruby\HomeConfig\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ConfigType extends Model
+class HomeConfigType extends Model
 {
     use SoftDeletes;
 
@@ -17,5 +17,9 @@ class ConfigType extends Model
         'created_at' => "Y-m-d H:i:s",
         'updated_at' => "Y-m-d H:i:s",
     ];
+
+    const CONFIG_TYPE_HOME_STYLE = 1;//首页样式
+    const CONFIG_TYPE_ITEM_JUMP = 2;//跳转类型
+
 
 }

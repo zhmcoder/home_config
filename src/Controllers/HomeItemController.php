@@ -22,14 +22,14 @@ class HomeItemController extends ContentController
 {
     public function grid()
     {
-        $config_type = request('config_type', 2);
-        $name = HomeItems::CONFIG_TYPE[$config_type];
+        $config_id = request('config_id', 1);
+//        $name = HomeItems::CONFIG_TYPE[$config_type];
 
         $grid = new Grid(new HomeItems());
-        $grid->model()->where('config_type', $config_type);
+        $grid->model()->where('config_id', $config_id);
 
-        $grid->addDialogForm($this->form()->actionParams(['config_type' => $config_type])->isDialog()->className('p-15'), '1000px');
-        $grid->editDialogForm($this->form(true)->actionParams(['config_type' => $config_type])->isDialog()->className('p-15'), '1000px');
+        $grid->addDialogForm($this->form()->isDialog()->className('p-15'), '800px');
+        $grid->editDialogForm($this->form(true)->isDialog()->className('p-15'), '800px');
 
         $grid->pageBackground()
             ->defaultSort('id', 'desc')
@@ -46,20 +46,20 @@ class HomeItemController extends ContentController
 
         $grid->column("title", "标题")->sortable();
 
-        $grid->column("thumb", $name)->component(
+        $grid->column("thumb", '图片')->component(
             Image::make()->size(50, 50)->preview()
         )->width(150)->align("center");
 
         $grid->column("is_show", "是否显示")->component(Boole::make())->width(150);
 
         $fields = EntityField::query()->find(291);
-        $option = $this->_selectOptionList($fields);
+        $option = $this->_selectOptionTableList($fields);
         $grid->column('jump_type', '跳转类型')->customValue(function ($row, $value) use ($option) {
-            return $option['option'][$value] ?? '';
+            return $option[$value]['label'] ?? '';
         });
 
-        $grid->toolbars(function (Grid\Toolbars $toolbars) use ($name) {
-            $toolbars->createButton()->content("添加" . $name);
+        $grid->toolbars(function (Grid\Toolbars $toolbars) {
+            $toolbars->createButton()->content("添加");
         });
 
         return $grid;
@@ -67,24 +67,24 @@ class HomeItemController extends ContentController
 
     public function form($isEdit = false)
     {
-        $config_type = request('config_type', 2);
-        $name = HomeItems::CONFIG_TYPE[$config_type];
+        $config_id = request('config_id', 2);
+//        $name = HomeItems::CONFIG_TYPE[$config_type];
 
         $form = new Form(new HomeItems());
         $form->getActions()->buttonCenter();
 
         $form->item("title", "标题")->required()->inputWidth(8);
 
-        $form->item("thumb", $name)->required()->component(
+        $form->item("thumb", '图片')->required()->component(
             Upload::make()->width(80)->height(80)
         )->help('建议图片大小: 50*50, 圆形');
 
         $form->item("is_show", "是否显示")->inputWidth(10)->component(CSwitch::make());
 
         $fields = EntityField::query()->find(291);
-        $option = $this->_radio($fields);
+        $option = $this->_selectOptionTable($fields);
         $form->item("jump_type", "跳转类型")->component(
-            RadioGroup::make(0, $option)
+            Select::make()->options($option)
         )->required(true, 'integer');
 
         $form->item('content', 'H5详情')->component(
@@ -107,7 +107,9 @@ class HomeItemController extends ContentController
 //            })->all();
 //        }))->vif('jump_type', 2);
 
-        $form->item('config_type', 'config_type')->hideLabel()->component(Input::make($config_type)->type('hidden'));
+        $form->item('config_id', '')->component(
+            Input::make($config_id)->type('hidden')
+        )->hideLabel();
 
         return $form;
     }
