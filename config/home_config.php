@@ -29,5 +29,9 @@ return [
         'textArea' => '长文本（textarea）',
         'wangEditor' => '富文本编辑器',
         'selectTable' => '下拉单选（连表查询）'
+    ],
+    'data_type' => [
+        '1' => '自有录入数据',
+        '2' => '表关联数据'
     ]
 ];

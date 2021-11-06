@@ -13,11 +13,13 @@ Route::group([
     $router->resource('search/list', 'SearchController')->names('search.list');
     $router->resource('app/info', 'AppInfoController')->names('app.info');
 
-    $router->get('home/config/relation_grid/{home_column_id}', 'HomeColumnController@relation_grid')->name('home.config.relation_grid');
+    $router->get('home/config/relation_grid/{home_column_id}', 'HomeConfigController@relation_grid')->name('home.config.relation_grid');
     $router->get('home/config/relation', 'HomeConfigController@relation')->name('home.config.relation');
     $router->resource('home/config', 'HomeConfigController')->names('home.config');
 
-    $router->resource('home/config_type', 'ConfigTypeController')->names('home.config.type');
+    $router->resource('home/jump', 'HomeJumpController')->names('home.jump');
+
+    $router->resource('home/shelf', 'HomeShelfController')->names('home.shelf');
 
 });
 

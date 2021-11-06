@@ -3,7 +3,11 @@
 namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Controllers\ContentController;
+use Andruby\DeepAdmin\Models\Content;
 use Andruby\DeepAdmin\Models\EntityField;
+use Andruby\DeepAdmin\Services\GridCacheService;
+use Andruby\HomeConfig\Models\AppInfo;
+use Andruby\HomeConfig\Models\HomeJump;
 use App\Models\Goods;
 use Andruby\HomeConfig\Models\HomeItems;
 use SmallRuralDog\Admin\Components\Attrs\SelectOption;
@@ -23,8 +27,6 @@ class HomeItemController extends ContentController
     public function grid()
     {
         $config_id = request('config_id', 1);
-//        $name = HomeItems::CONFIG_TYPE[$config_type];
-
         $grid = new Grid(new HomeItems());
         $grid->model()->where('config_id', $config_id);
 
@@ -43,8 +45,11 @@ class HomeItemController extends ContentController
             ->emptyText("暂无数据");
 
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
-
         $grid->column("title", "标题")->sortable();
+//        $grid->column("config_id", "货架名称")->customValue(function ($row, $value) {
+//            return GridCacheService::instance()->get_cache_value(HomeJump::class,
+//                'home_config_type_' . $value, $value, 'id', 'name');
+//        });
 
         $grid->column("thumb", '图片')->component(
             Image::make()->size(50, 50)->preview()
@@ -52,11 +57,11 @@ class HomeItemController extends ContentController
 
         $grid->column("is_show", "是否显示")->component(Boole::make())->width(150);
 
-        $fields = EntityField::query()->find(291);
-        $option = $this->_selectOptionTableList($fields);
-        $grid->column('jump_type', '跳转类型')->customValue(function ($row, $value) use ($option) {
-            return $option[$value]['label'] ?? '';
-        });
+
+//        $grid->column('jump_type', '跳转类型')->customValue(function ($row, $value) {
+//            return GridCacheService::instance()->get_cache_value(HomeJump::class,
+//                'home_config_type_' . $value, $value, 'config_value', 'name');;
+//        });
 
         $grid->toolbars(function (Grid\Toolbars $toolbars) {
             $toolbars->createButton()->content("添加");
@@ -81,31 +86,48 @@ class HomeItemController extends ContentController
 
         $form->item("is_show", "是否显示")->inputWidth(10)->component(CSwitch::make());
 
-        $fields = EntityField::query()->find(291);
+        $fields = EntityField::query()->where('name', 'jump_id')->first();
         $option = $this->_selectOptionTable($fields);
-        $form->item("jump_type", "跳转类型")->component(
+        $form->item("jump_id", "跳转类型")->component(
             Select::make()->options($option)
         )->required(true, 'integer');
 
-        $form->item('content', 'H5详情')->component(
-            WangEditor::make()->uploadImgServer($this->uploadImages)->uploadFileName('file')->style('min-height:300px;')
-        )->inputWidth(15)->vif('jump_type', 0);
+        $jump_list = HomeJump::where('data_type', 1)->get()->toArray();
+        foreach ($jump_list as $item) {
+            switch ($item['form_type']) {
+                case 'input':
+                    $form->item('content', $item['name'])->component(
+                        Input::make()->showWordLimit()
+                    )->inputWidth(15)->vif('jump_id', $item['id']);
+                    break;
+                case 'textArea':
+                    $form->item('content', $item['name'])->component(
+                        Input::make()->textarea(4)->showWordLimit()
+                    )->inputWidth(15)->vif('jump_id', $item['id']);
+                    break;
+                case 'wangEditor':
+                    $form->item('content', $item['name'])->component(
+                        WangEditor::make()->uploadImgServer($this->uploadImages)->uploadFileName('file')->style('min-height:300px;')
+                    )->inputWidth(15)->vif('jump_id', $item['id']);
+                    break;
+                case 'selectTable':
+                    $options = [];
+                    if (!empty($item['table_info'])) {
+                        $table_info = explode("\n", $item['table_info']);
+                        $fields = explode(",", $table_info[1]);
+                        $table = new Content($table_info[0]);
+                        $option_data = $table->get($fields)->toArray();
+                        foreach ($option_data as $option) {
+                            $options[] = SelectOption::make($option[$fields[0]], $option[$fields[1]]);
+                        }
+                    }
 
-        $form->item('h5_url', 'H5链接')->component(
-            Input::make()->textarea(4)->showWordLimit()
-        )->inputWidth(15)->vif('jump_type', 3);
-
-        $form->item('relation_id', "商品")->required(true, 'integer')->serveRules("min:1")->component(Select::make(null)->filterable()->options(function () {
-            return Goods::query()->orderByDesc('id')->where('on_shelf', 1)->get()->map(function ($item) {
-                return SelectOption::make($item->id, $item->name);
-            })->all();
-        }))->vif('jump_type', 1);
-
-//        $form->item('relation_id', "店铺")->required(true, 'integer')->serveRules("min:1")->component(Select::make(null)->filterable()->options(function () {
-//            return Shop::query()->orderByDesc('id')->get()->map(function ($item) {
-//                return SelectOption::make($item->id, $item->name);
-//            })->all();
-//        }))->vif('jump_type', 2);
+                    $form->item('content', $item['name'])->component(
+                        Select::make()->options($options)
+                    )->inputWidth(15)->vif('jump_id', $item['id']);
+                    break;
+            }
+        }
 
         $form->item('config_id', '')->component(
             Input::make($config_id)->type('hidden')

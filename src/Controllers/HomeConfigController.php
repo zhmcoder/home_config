@@ -3,9 +3,12 @@
 namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Components\Grid\SortEdit;
+use Andruby\DeepAdmin\Services\GridCacheService;
 use Andruby\HomeConfig\Models\HomeConfig;
+use Andruby\HomeConfig\Models\HomeJump;
 use Andruby\HomeConfig\Models\HomeItems;
 use Andruby\HomeConfig\Models\HomeConfigIds;
+use Andruby\HomeConfig\Models\HomeShelf;
 use Illuminate\Support\Facades\DB;
 use SmallRuralDog\Admin\Components\Widgets\Card;
 use Andruby\DeepAdmin\Controllers\ContentController;
@@ -21,10 +24,12 @@ class HomeConfigController extends ContentController
     {
         $row = $actions->getRow();
 
-        $title = HomeConfig::SHELF_TYPE[$row['shelf_type']];
-        $actions->add(Grid\Actions\ActionButton::make('关联' . $title)
+//        $title = HomeConfig::SHELF_TYPE[$row['shelf_type']];
+        $title = GridCacheService::instance()->get_cache_value(HomeShelf::class,
+            'home_shelf_' . $row['shelf_type'], $row['shelf_type'], 'id', 'name');
+        $actions->add(Grid\Actions\ActionButton::make('关联数据')
             ->handler(Grid\Actions\ActionButton::HANDLER_ROUTE)
-            ->uri('/home/column/relation_grid/{id}?shelf_type=' . $row['shelf_type'] . '&timestamp=' . time()));
+            ->uri('/home/config/relation_grid/{id}?shelf_type=' . $row['shelf_type'].'&entity_id=9' . '&timestamp=' . time()));
 
         $actions->setDeleteAction(new Grid\Actions\DeleteDialogAction())->params('entity_id=9');
     }
@@ -126,14 +131,14 @@ class HomeConfigController extends ContentController
                 ->successEmit("tableReload")
                 ->afterEmit("tableSetLoading", false)
                 ->handler(Grid\Actions\ActionButton::HANDLER_REQUEST)
-                ->uri('/admin-api/home/column/relation?grid_type=' . $grid_type . '&shelf_type=' . $shelf_type . '&home_column_id=' . $home_column_id . '&column_id={id}')
+                ->uri('/admin-api/home/config/relation?grid_type=' . $grid_type . '&shelf_type=' . $shelf_type . '&home_column_id=' . $home_column_id . '&column_id={id}')
                 ->disabled($isAction)
                 ->message('确认' . $op_name)
             );
 
         })->actionWidth(30);
 
-        $grid->dataUrl("admin-api/home/column/relation_grid/{$home_column_id}?grid_type=" . $grid_type);
+        $grid->dataUrl("admin-api/home/config/relation_grid/{$home_column_id}?grid_type=" . $grid_type);
 
         return $grid;
     }
