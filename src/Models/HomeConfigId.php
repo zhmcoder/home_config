@@ -5,7 +5,7 @@ namespace Andruby\HomeConfig\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class HomeConfigIds extends Model
+class HomeConfigId extends Model
 {
     use SoftDeletes;
 

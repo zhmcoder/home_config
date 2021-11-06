@@ -9,7 +9,7 @@ use Andruby\DeepAdmin\Services\GridCacheService;
 use Andruby\HomeConfig\Models\AppInfo;
 use Andruby\HomeConfig\Models\HomeJump;
 use App\Models\Goods;
-use Andruby\HomeConfig\Models\HomeItems;
+use Andruby\HomeConfig\Models\HomeItem;
 use SmallRuralDog\Admin\Components\Attrs\SelectOption;
 use SmallRuralDog\Admin\Components\Form\CSwitch;
 use SmallRuralDog\Admin\Components\Form\Input;
@@ -27,7 +27,7 @@ class HomeItemController extends ContentController
     public function grid()
     {
         $config_id = request('config_id', 1);
-        $grid = new Grid(new HomeItems());
+        $grid = new Grid(new HomeItem());
         $grid->model()->where('config_id', $config_id);
 
         $grid->addDialogForm($this->form()->isDialog()->className('p-15'), '800px');
@@ -75,7 +75,7 @@ class HomeItemController extends ContentController
         $config_id = request('config_id', 2);
 //        $name = HomeItems::CONFIG_TYPE[$config_type];
 
-        $form = new Form(new HomeItems());
+        $form = new Form(new HomeItem());
         $form->getActions()->buttonCenter();
 
         $form->item("title", "标题")->required()->inputWidth(8);

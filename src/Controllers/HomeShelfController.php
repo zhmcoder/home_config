@@ -7,7 +7,7 @@ use Andruby\DeepAdmin\Models\Entity;
 use Andruby\DeepAdmin\Models\EntityField;
 use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeJump;
-use Andruby\HomeConfig\Models\HomeItems;
+use Andruby\HomeConfig\Models\HomeItem;
 use Andruby\HomeConfig\Models\HomeShelf;
 use App\Models\AppInfo;
 use App\Models\Goods;

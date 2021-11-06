@@ -8,7 +8,7 @@ use Andruby\DeepAdmin\Models\EntityField;
 use Andruby\DeepAdmin\Services\GridCacheService;
 use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeJump;
-use Andruby\HomeConfig\Models\HomeItems;
+use Andruby\HomeConfig\Models\HomeItem;
 use App\Models\AppInfo;
 use App\Models\Goods;
 use SmallRuralDog\Admin\Components\Attrs\SelectOption;
