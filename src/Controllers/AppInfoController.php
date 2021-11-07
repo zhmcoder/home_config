@@ -10,6 +10,7 @@ use SmallRuralDog\Admin\Grid;
 
 class AppInfoController extends ContentController
 {
+
     protected function getTableName()
     {
         return 'app_infos';

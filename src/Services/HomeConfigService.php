@@ -28,6 +28,19 @@ class HomeConfigService
             })
             ->orderBy('sort', 'asc')->orderBy('id', 'desc')->get()->toArray();
 
+        foreach ($homeConfigList as &$config_data) {
+//            $config
+
+            unset($config_data['shelf_id']);
+            unset($config_data['shelf_on']);
+            unset($config_data['show_num']);
+            unset($config_data['sort']);
+            unset($config_data['column_count']);
+            unset($config_data['publish_up']);
+            unset($config_data['publish_down']);
+            unset($config_data['show_app']);
+        }
+
         return $homeConfigList;
     }
 }
