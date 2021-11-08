@@ -2,6 +2,7 @@
 
 namespace Andruby\HomeConfig\Controllers;
 
+use Andruby\DeepAdmin\Components\Grid\SortEdit;
 use Andruby\DeepAdmin\Components\Grid\SortUpDown;
 use Andruby\HomeConfig\Models\Search;
 use SmallRuralDog\Admin\Controllers\AdminController;
@@ -22,7 +23,6 @@ class SearchController extends AdminController
             ->quickSearch(['name'])
             ->stripe(true)
             ->fit(true)
-            ->defaultSort('id', 'desc')
             ->perPage(env('PER_PAGE', 15))
             ->size(env('TABLE_SIZE', ''))
             ->border(env('TABLE_BORDER', false))
@@ -31,7 +31,8 @@ class SearchController extends AdminController
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
         $grid->column("name", "名称");
         $grid->column('sort', '排序')->component(
-            SortUpDown::make(100)->setSortAction(config('admin.route.api_prefix') . '/entities/content/sort_up_down?entity_id=7')
+        //SortUpDown::make(100)->setSortAction(config('admin.route.api_prefix') . '/entities/content/sort_up_down?entity_id=7')
+            SortEdit::make()->action(config('admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=7')
         );
 
         $grid->toolbars(function (Grid\Toolbars $toolbars) {

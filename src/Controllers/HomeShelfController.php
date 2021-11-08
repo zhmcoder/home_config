@@ -3,24 +3,9 @@
 namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Controllers\ContentController;
-use Andruby\DeepAdmin\Models\Entity;
-use Andruby\DeepAdmin\Models\EntityField;
-use Andruby\HomeConfig\Models\HomeConfig;
-use Andruby\HomeConfig\Models\HomeJump;
-use Andruby\HomeConfig\Models\HomeItem;
 use Andruby\HomeConfig\Models\HomeShelf;
-use App\Models\AppInfo;
-use App\Models\Goods;
-use SmallRuralDog\Admin\Components\Attrs\SelectOption;
-use SmallRuralDog\Admin\Components\Form\CSwitch;
-use SmallRuralDog\Admin\Components\Form\Input;
-use SmallRuralDog\Admin\Components\Form\RadioGroup;
-use SmallRuralDog\Admin\Components\Form\Select;
 use SmallRuralDog\Admin\Components\Form\Upload;
-use SmallRuralDog\Admin\Components\Form\WangEditor;
-use SmallRuralDog\Admin\Components\Grid\Boole;
 use SmallRuralDog\Admin\Components\Grid\Image;
-use SmallRuralDog\Admin\Controllers\AdminController;
 use SmallRuralDog\Admin\Form;
 use SmallRuralDog\Admin\Grid;
 
@@ -29,15 +14,14 @@ class HomeShelfController extends ContentController
     public function grid()
     {
         $grid = new Grid(new HomeShelf());
-        $grid->addDialogForm($this->form()->isDialog()->className('p-15'), '800px');
-        $grid->editDialogForm($this->form(true)->isDialog()->className('p-15'), '800px');
+        $grid->addDialogForm($this->form()->isDialog()->className('p-15'), '600px');
+        $grid->editDialogForm($this->form(true)->isDialog()->className('p-15'), '600px');
 
         $grid->pageBackground()
             ->defaultSort('id', 'desc')
-            ->quickSearch(['title'])
+            ->quickSearch(['name'])
             ->stripe(true)
             ->fit(true)
-            ->defaultSort('id', 'desc')
             ->perPage(env('PER_PAGE', 15))
             ->size(env('TABLE_SIZE', ''))
             ->border(env('TABLE_BORDER', false))
@@ -45,6 +29,9 @@ class HomeShelfController extends ContentController
 
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
         $grid->column("name", "货架名称");
+        $grid->column("thumb", "货架样式示例")->component(
+            Image::make()->size(50, 50)->preview()
+        )->align("center");
 
         return $grid;
     }

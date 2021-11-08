@@ -3,9 +3,6 @@
 namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Controllers\ContentController;
-use App\Models\AppInfo;
-use SmallRuralDog\Admin\Controllers\AdminController;
-use SmallRuralDog\Admin\Form;
 use SmallRuralDog\Admin\Grid;
 
 class AppInfoController extends ContentController
@@ -24,7 +21,7 @@ class AppInfoController extends ContentController
         $grid->toolbars(function (Grid\Toolbars $toolbars) {
             $toolbars->createButton()->content("添加应用");
         })->actions(function (Grid\Actions $actions) {
-            $actions->setDeleteAction(new Grid\Actions\DeleteDialogAction())->params('entity_id=8');
+            $actions->setDeleteAction(new Grid\Actions\DeleteDialogAction());
         });
 
         return $grid;

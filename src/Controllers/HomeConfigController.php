@@ -6,21 +6,15 @@ use Andruby\DeepAdmin\Components\Grid\SortEdit;
 use Andruby\DeepAdmin\Services\GridCacheService;
 use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeJump;
-use Andruby\HomeConfig\Models\HomeItem;
 use Andruby\HomeConfig\Models\HomeConfigId;
-use Andruby\HomeConfig\Models\HomeShelf;
 use Illuminate\Support\Facades\DB;
-use SmallRuralDog\Admin\Components\Attrs\SelectOption;
 use SmallRuralDog\Admin\Components\Form\Input;
 use SmallRuralDog\Admin\Components\Form\Radio;
-use SmallRuralDog\Admin\Components\Form\Select;
-use SmallRuralDog\Admin\Components\Form\WangEditor;
 use SmallRuralDog\Admin\Components\Widgets\Card;
 use Andruby\DeepAdmin\Controllers\ContentController;
 use SmallRuralDog\Admin\Grid;
 use Andruby\DeepAdmin\Models\Content;
 use SmallRuralDog\Admin\Layout\Row;
-use Illuminate\Database\Query\JoinClause;
 
 // 货架关联
 class HomeConfigController extends ContentController
@@ -94,7 +88,7 @@ class HomeConfigController extends ContentController
 //            }
 
             $grid->defaultSort('sort', 'asc');
-            $grid->column('id', "ID")->width(80)->sortable();
+            $grid->column('id', "ID")->width(60)->sortable();
         } else if ($grid_type == 2) {
             $home_jump = HomeJump::get()->toArray();
             $table_name = 'home_items';
@@ -131,14 +125,14 @@ class HomeConfigController extends ContentController
             $grid = new Grid(new Content($table_name));
             $grid->model()->select($fields);
 //            $grid->model()->where('is_show', 1)->select(['id', 'name']);
-            $grid->column('id', "ID")->width(80)->sortable();
+            $grid->column('id', "ID")->width(60)->sortable();
 
             if ($quickOptions) {
                 $grid->quickFilter()->filterKey('jump_id')
                     ->quickOptions($quickOptions, false)->defaultValue($home_jump[0]['id']);
             }
         }
-        $grid->height('400px');
+        $grid->autoHeight();
 
         $grid->quickSearch(['name'])->quickSearchPlaceholder("名称");
 
@@ -150,7 +144,7 @@ class HomeConfigController extends ContentController
                         'home_jump_' . $value, $value, 'id', 'name');
                 })->width(100);
             $grid->column('sort', '排序')->component(
-                SortEdit::make()->action(config('admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=55')
+                SortEdit::make()->action(config('admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=9')
             )->width(100)->sortable();
             $grid->column('third_id', "关联ID")->width(90)->sortable();
         }
@@ -166,7 +160,13 @@ class HomeConfigController extends ContentController
             if ($grid_type == 1) {
                 $op_name = '取消关联';
             } else {
-                if (isset($row['config_id'])) {
+                $where = [
+                    'config_id' => $home_config_id,
+                    'jump_id' => $jump_id,
+                    'third_id' => $row['id'],
+                ];
+                $homeConfigIdInfo = HomeConfigId::query()->where($where)->first();
+                if (!empty($homeConfigIdInfo)) {
                     $isAction = true;
                     $op_name = '已关联';
                 } else {
@@ -185,7 +185,7 @@ class HomeConfigController extends ContentController
                 ->message('确认' . $op_name)
             );
 
-        })->actionWidth(30);
+        })->actionWidth(40);
 
         $grid->dataUrl("admin-api/home/config/relation_grid/{$home_config_id}?grid_type=" . $grid_type);
 
@@ -206,7 +206,7 @@ class HomeConfigController extends ContentController
         if ($grid_type == 1) {
             DB::table('home_config_ids')
                 ->where('config_id', $home_config_id)
-                ->where('jump_id', $jump_id)
+                //->where('jump_id', $jump_id)
                 ->where('id', $third_id)
                 ->delete();
             $data['action']['emit'] = 'tableReload';

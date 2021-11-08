@@ -3,24 +3,11 @@
 namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Controllers\ContentController;
-use Andruby\DeepAdmin\Models\Entity;
-use Andruby\DeepAdmin\Models\EntityField;
-use Andruby\DeepAdmin\Services\GridCacheService;
-use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeJump;
-use Andruby\HomeConfig\Models\HomeItem;
-use App\Models\AppInfo;
-use App\Models\Goods;
 use SmallRuralDog\Admin\Components\Attrs\SelectOption;
-use SmallRuralDog\Admin\Components\Form\CSwitch;
 use SmallRuralDog\Admin\Components\Form\Input;
-use SmallRuralDog\Admin\Components\Form\RadioGroup;
 use SmallRuralDog\Admin\Components\Form\Select;
-use SmallRuralDog\Admin\Components\Form\Upload;
-use SmallRuralDog\Admin\Components\Form\WangEditor;
-use SmallRuralDog\Admin\Components\Grid\Boole;
-use SmallRuralDog\Admin\Components\Grid\Image;
-use SmallRuralDog\Admin\Controllers\AdminController;
+use SmallRuralDog\Admin\Components\Grid\Tag;
 use SmallRuralDog\Admin\Form;
 use SmallRuralDog\Admin\Grid;
 
@@ -43,10 +30,9 @@ class HomeJumpController extends ContentController
 
         $grid->pageBackground()
             ->defaultSort('id', 'desc')
-            ->quickSearch(['title'])
+            ->quickSearch(['name'])
             ->stripe(true)
             ->fit(true)
-            ->defaultSort('id', 'desc')
             ->perPage(env('PER_PAGE', 15))
             ->size(env('TABLE_SIZE', ''))
             ->border(env('TABLE_BORDER', false))
@@ -54,13 +40,18 @@ class HomeJumpController extends ContentController
 
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
         $grid->column("name", "类型名称");
-        $grid->column("form_type", "关联数据类型");
+
+        $formType = config('home_config.form_type');
+        $grid->column("form_type", "关联数据类型")
+            ->customValue(function ($row, $value) use ($formType) {
+                return $formType[$value];
+            })->component(Tag::make()->type($formType));
 
         $dataType = config('home_config.data_type');
         $grid->column("data_type", "表单类型")
             ->customValue(function ($row, $value) use ($dataType) {
                 return $dataType[$value];
-            });
+            })->component(Tag::make()->type($dataType));
 
         return $grid;
     }

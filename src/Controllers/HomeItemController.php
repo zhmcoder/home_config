@@ -5,15 +5,11 @@ namespace Andruby\HomeConfig\Controllers;
 use Andruby\DeepAdmin\Controllers\ContentController;
 use Andruby\DeepAdmin\Models\Content;
 use Andruby\DeepAdmin\Models\EntityField;
-use Andruby\DeepAdmin\Services\GridCacheService;
-use Andruby\HomeConfig\Models\AppInfo;
 use Andruby\HomeConfig\Models\HomeJump;
-use App\Models\Goods;
 use Andruby\HomeConfig\Models\HomeItem;
 use SmallRuralDog\Admin\Components\Attrs\SelectOption;
 use SmallRuralDog\Admin\Components\Form\CSwitch;
 use SmallRuralDog\Admin\Components\Form\Input;
-use SmallRuralDog\Admin\Components\Form\RadioGroup;
 use SmallRuralDog\Admin\Components\Form\Select;
 use SmallRuralDog\Admin\Components\Form\Upload;
 use SmallRuralDog\Admin\Components\Form\WangEditor;
@@ -38,7 +34,6 @@ class HomeItemController extends ContentController
             ->quickSearch(['title'])
             ->stripe(true)
             ->fit(true)
-            ->defaultSort('id', 'desc')
             ->perPage(env('PER_PAGE', 15))
             ->size(env('TABLE_SIZE', ''))
             ->border(env('TABLE_BORDER', false))
