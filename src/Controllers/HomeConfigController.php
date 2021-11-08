@@ -33,9 +33,9 @@ class HomeConfigController extends ContentController
 //            'home_shelf_' . $row['shelf_id'], $row['shelf_type'], 'id', 'name');
         $actions->add(Grid\Actions\ActionButton::make('关联数据')
             ->handler(Grid\Actions\ActionButton::HANDLER_ROUTE)
-            ->uri('/home/config/relation_grid/{id}?' . 'entity_id=9' . '&timestamp=' . time()));
+            ->uri('/home/config/relation_grid/{id}' . '?timestamp=' . time()));
 
-        $actions->setDeleteAction(new Grid\Actions\DeleteDialogAction())->params('entity_id=9');
+        $actions->setDeleteAction(new Grid\Actions\DeleteDialogAction());
     }
 
     public function relation_grid(\SmallRuralDog\Admin\Layout\Content $content, $home_config_id = null)
