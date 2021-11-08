@@ -237,6 +237,7 @@ class HomeConfigController extends ContentController
                 $item['third_id'] = $third_id;
                 $item['name'] = $table_data[$fields[1]];
                 $item['jump_id'] = $jump_id;
+                $item['data_type'] = $jump_info['data_type'];
                 $item['updated_at'] = date('Y-m-d H:i:s', time());
                 $item['created_at'] = date('Y-m-d H:i:s', time());
                 $id = HomeConfigId::insertGetId($item);

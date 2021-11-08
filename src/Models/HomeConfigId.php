@@ -11,7 +11,7 @@ class HomeConfigId extends Model
 
     protected $guarded = [];
 
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $hidden = ['created_at', 'updated_at','deleted_at'];
 
     protected $casts = [
         'created_at' => "Y-m-d H:i:s",
