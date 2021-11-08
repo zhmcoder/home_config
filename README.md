@@ -5,3 +5,4 @@
 ## TODO
 * README
 * home config
+php artisan db:seed --class=HomeConfigSeeder
