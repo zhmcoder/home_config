@@ -1,7 +1,7 @@
 # Multiple Tokens Auth
 
-> A Laravel guard for multiple token auth
+> home config for deep admin framework
 
 ## TODO
 * README
-* Expire tokens
+* home config
