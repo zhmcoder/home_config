@@ -61,6 +61,7 @@ class  HomeConfigService
                 $item_data = HomeItem::query()->select(['id', 'title', 'thumb', 'content'])->findOrFail($third_id);
                 if ($item_data) {
                     $item_data = $item_data->toArray();
+                    $item_data['thumb'] = http_path($item_data['thumb']);
                 }
             } else {
                 $table_info = table_info($jump_info['table_info']);
