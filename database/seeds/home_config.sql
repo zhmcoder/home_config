@@ -52,7 +52,8 @@ CREATE TABLE `home_configs` (
   `sort` int(11) NOT NULL DEFAULT '100' COMMENT '排序',
   `column_count` int(11) NOT NULL DEFAULT '0' COMMENT '专栏数量',
   `publish_up` datetime DEFAULT NULL COMMENT '上架时间',
-  `publish_down` datetime DEFAULT NULL COMMENT '下架时间'
+  `publish_down` datetime DEFAULT NULL COMMENT '下架时间',
+  `image` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '栏目图标'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
