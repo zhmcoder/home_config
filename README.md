@@ -5,4 +5,5 @@
 ## TODO
 * README
 * home config
+php artisan vendor:publish --provider="Andruby\HomeConfig\HomeServiceProvider"
 php artisan db:seed --class=HomeConfigSeeder

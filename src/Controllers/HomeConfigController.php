@@ -66,6 +66,7 @@ class HomeConfigController extends ContentController
     private function column_grid($grid_type, $home_config_id)
     {
         $jump_id = request('jump_id', null);
+        $fields = ['id', 'name'];
         if ($grid_type == 1) {
             $grid = new Grid(new Content('home_config_ids'));
 
@@ -92,7 +93,6 @@ class HomeConfigController extends ContentController
         } else if ($grid_type == 2) {
             $home_jump = HomeJump::get()->toArray();
             $table_name = 'home_items';
-            $fields = ['id', 'name'];
             $quickOptions = null;
             $jump_info = null;
             if (count($home_jump)) {
@@ -136,8 +136,9 @@ class HomeConfigController extends ContentController
 
         $grid->quickSearch(['name'])->quickSearchPlaceholder("名称");
 
-        $grid->column('name', "名称");
+
         if ($grid_type == 1) {
+            $grid->column('name', "名称");
             $grid->column('jump_id', "跳转类型")
                 ->customValue(function ($row, $value) {
                     return GridCacheService::instance()->get_cache_value(HomeJump::class,
@@ -147,6 +148,8 @@ class HomeConfigController extends ContentController
                 SortEdit::make()->action(config('admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=9')
             )->width(100)->sortable();
             $grid->column('third_id', "关联ID")->width(90)->sortable();
+        }else{
+            $grid->column($fields[1], "名称");
         }
 
         $grid->toolbars(function (Grid\Toolbars $toolbars) {
