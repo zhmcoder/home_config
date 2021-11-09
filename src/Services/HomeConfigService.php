@@ -42,7 +42,6 @@ class  HomeConfigService
             }
             $config_data['items'] = $config_items;
 
-            unset($config_data['shelf_id']);
             unset($config_data['shelf_on']);
             unset($config_data['show_num']);
             unset($config_data['sort']);
