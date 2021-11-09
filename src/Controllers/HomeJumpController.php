@@ -4,6 +4,7 @@ namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Controllers\ContentController;
 use Andruby\HomeConfig\Models\HomeJump;
+use Illuminate\Http\Request;
 use SmallRuralDog\Admin\Components\Attrs\SelectOption;
 use SmallRuralDog\Admin\Components\Form\Input;
 use SmallRuralDog\Admin\Components\Form\Select;
@@ -44,7 +45,7 @@ class HomeJumpController extends ContentController
         $formType = config('home_config.form_type');
         $grid->column("form_type", "关联数据类型")
             ->customValue(function ($row, $value) use ($formType) {
-                return $formType[$value];
+                return $formType[$row['data_type']][$value];
             })->component(Tag::make()->type($formType));
 
         $dataType = config('home_config.data_type');
@@ -65,8 +66,10 @@ class HomeJumpController extends ContentController
         $dataType = config('home_config.data_type');
         $form->item('data_type', '关联数据类型')
             ->component(
-                Select::make()
-                    ->filterable()
+                Select::make()->filterable()
+                    ->isRelatedSelect(true)
+                    ->relatedSelectRef('form_type')
+                    ->ref('data_type')
                     ->options(function () use ($dataType) {
                         $return = [];
                         foreach ($dataType as $key => $val) {
@@ -76,24 +79,34 @@ class HomeJumpController extends ContentController
                     })
             );
 
-        $formType = config('home_config.form_type');
-        $form->item('form_type', '表单类型')
-            ->help('下拉选择（远程搜索）、下拉选择（多选，远程搜索）只支持行内展示')
-            ->component(
-                Select::make()
-                    ->filterable()
-                    ->options(function () use ($formType) {
-                        $return = [];
-                        foreach ($formType as $key => $val) {
-                            $return[] = SelectOption::make($key, $val);
-                        }
-                        return $return;
-                    })
-            );
+        $remoteUrl = config('admin.route.api_prefix') . '/home/jump/form_type';
+        $form->item('form_type', '表单类型')->help('下拉选择（远程搜索）、下拉选择（多选，远程搜索）只支持行内展示')
+            ->component(Select::make()->filterable()->remote($remoteUrl)->ref('form_type'));
+
         $form->item("table_info", "配置项关联表")->component(
             Input::make()->textarea(5)->placeholder('对于表单类型为单选框、多选框、下拉选择的，需在此配置对应参数。参数格式为：key=value，多个以换行分隔。也可以填写自定义的函数名称，函数名称需以getFormItemsFrom开头，返回值需与前述数据格式一致。对于下拉选择远程搜索表单类型、短文本（input，自动完成）表单类型，需在此填写后端接口URL地址，接口返回数据格式可参考文档说明。')
         )->vif('form_type', 'selectTable');
 
         return $form;
+    }
+
+    public function form_type(Request $request)
+    {
+        $data_type = $request->input('data_type');
+
+        $formType = config('home_config.form_type');
+
+        $list = null;
+
+        foreach ($formType[$data_type] as $key => $value) {
+            $list[] = ['value' => $key, 'label' => $value];
+        }
+
+        return [
+            'data' => [
+                'total' => $list ? count($list) : 0,
+                'data' => $list
+            ],
+        ];
     }
 }

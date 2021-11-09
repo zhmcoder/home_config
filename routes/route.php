@@ -17,6 +17,7 @@ Route::group([
     $router->get('home/config/relation', 'HomeConfigController@relation')->name('home.config.relation');
     $router->resource('home/config', 'HomeConfigController')->names('home.config');
 
+    $router->get('home/jump/form_type', 'HomeJumpController@form_type')->name('home.jump.form_type');
     $router->resource('home/jump', 'HomeJumpController')->names('home.jump');
 
     $router->resource('home/shelf', 'HomeShelfController')->names('home.shelf');
