@@ -14,6 +14,9 @@ class  HomeConfigService
 {
     public function home_data($app_id, $os_type, $date_time)
     {
+        if ($date_time == null) {
+            $date_time = date('Y-m-d H:i:s');
+        }
         $homeConfigList = HomeConfig::query()->where('shelf_on', 1)
             ->where('show_app', 'like', '%"' . $app_id . '"%')
             ->where(function ($query) use ($date_time) {
