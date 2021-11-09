@@ -31,7 +31,7 @@ class HomeItemController extends ContentController
 
         $grid->pageBackground()
             ->defaultSort('id', 'desc')
-            ->quickSearch(['title'])
+            ->quickSearch(['name'])
             ->stripe(true)
             ->fit(true)
             ->perPage(env('PER_PAGE', 15))
@@ -40,13 +40,13 @@ class HomeItemController extends ContentController
             ->emptyText("暂无数据");
 
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
-        $grid->column("title", "标题")->sortable();
+        $grid->column("name", "标题")->sortable();
 //        $grid->column("config_id", "货架名称")->customValue(function ($row, $value) {
 //            return GridCacheService::instance()->get_cache_value(HomeJump::class,
 //                'home_config_type_' . $value, $value, 'id', 'name');
 //        });
 
-        $grid->column("thumb", '图片')->component(
+        $grid->column("image", '图片')->component(
             Image::make()->size(50, 50)->preview()
         )->width(150)->align("center");
 
@@ -73,9 +73,9 @@ class HomeItemController extends ContentController
         $form = new Form(new HomeItem());
         $form->getActions()->buttonCenter();
 
-        $form->item("title", "标题")->required()->inputWidth(8);
+        $form->item("name", "标题")->required()->inputWidth(8);
 
-        $form->item("thumb", '图片')->required()->component(
+        $form->item("image", '图片')->required()->component(
             Upload::make()->width(80)->height(80)
         )->help('建议图片大小: 50*50, 圆形');
 

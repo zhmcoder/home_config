@@ -58,10 +58,10 @@ class  HomeConfigService
         $item_data = null;
         if ($jump_info) {
             if ($jump_info['data_type'] == HomeJump::DATA_TYPE_INPUT) {
-                $item_data = HomeItem::query()->select(['id', 'title', 'thumb', 'content'])->findOrFail($third_id);
+                $item_data = HomeItem::query()->select(['id', 'name', 'image', 'content'])->findOrFail($third_id);
                 if ($item_data) {
                     $item_data = $item_data->toArray();
-                    $item_data['thumb'] = http_path($item_data['thumb']);
+                    $item_data['image'] = http_path($item_data['image']);
                 }
             } else {
                 $table_info = table_info($jump_info['table_info']);

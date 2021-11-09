@@ -111,10 +111,10 @@ CREATE TABLE `home_items` (
   `deleted_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  `title` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标题',
-  `thumb` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '轮播图片',
+  `name` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '标题',
+  `image` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '轮播图片',
   `content` text COLLATE utf8mb4_unicode_ci COMMENT '内容',
-  `sub_title` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '副标题',
+  `sub_name` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '副标题',
   `sort` int(11) DEFAULT '0' COMMENT '排序',
   `tag` varchar(4) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '标签',
   `is_show` int(11) DEFAULT '1' COMMENT '是否显示（1显示、0不显示）',
@@ -128,7 +128,7 @@ CREATE TABLE `home_items` (
 -- Dumping data for table `home_items`
 --
 
-INSERT INTO `home_items` (`id`, `deleted_at`, `created_at`, `updated_at`, `title`, `thumb`, `content`, `sub_title`, `sort`, `tag`, `is_show`, `h5_url`, `order`, `relation_id`, `config_id`) VALUES
+INSERT INTO `home_items` (`id`, `deleted_at`, `created_at`, `updated_at`, `name`, `image`, `content`, `sub_name`, `sort`, `tag`, `is_show`, `h5_url`, `order`, `relation_id`, `config_id`) VALUES
 (62, NULL, '2021-11-06 14:47:20', '2021-11-06 14:47:20', '测试H5链接', 'images/WechatIMG2916.jpeg', '2342342', '', 0, '', 1, '', 0, 0, 1);
 
 -- --------------------------------------------------------
@@ -171,14 +171,14 @@ CREATE TABLE `home_shelves` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `name` varchar(256) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '货架名称',
-  `thumb` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '货架UI图'
+  `image` varchar(512) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '货架UI图'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `home_shelves`
 --
 
-INSERT INTO `home_shelves` (`id`, `deleted_at`, `created_at`, `updated_at`, `name`, `thumb`) VALUES
+INSERT INTO `home_shelves` (`id`, `deleted_at`, `created_at`, `updated_at`, `name`, `image`) VALUES
 (1, NULL, '2021-11-06 04:18:01', '2021-11-08 14:11:06', '金刚圈', 'images/ico01.gif'),
 (2, NULL, '2021-11-06 04:18:15', '2021-11-08 14:11:26', '轮播图', 'images/ico05.gif'),
 (3, NULL, '2021-11-06 05:22:37', '2021-11-08 14:11:21', '列表展示', 'images/ico03.gif'),
@@ -206,7 +206,7 @@ ALTER TABLE `home_config_ids`
 --
 ALTER TABLE `home_items`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `bmh_banner_name_unique` (`title`);
+  ADD UNIQUE KEY `bmh_banner_name_unique` (`name`);
 
 --
 -- Indexes for table `home_jumps`

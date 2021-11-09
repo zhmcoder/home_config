@@ -29,7 +29,7 @@ class HomeShelfController extends ContentController
 
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
         $grid->column("name", "货架名称");
-        $grid->column("thumb", "货架样式示例")->component(
+        $grid->column("image", "货架样式示例")->component(
             Image::make()->size(50, 50)->preview()
         )->align("center");
 
@@ -41,7 +41,7 @@ class HomeShelfController extends ContentController
         $form = new Form(new HomeShelf());
         $form->getActions()->buttonCenter();
         $form->item("name", "货架名称")->required()->inputWidth(8);
-        $form->item("thumb", '货架样式示例')->required()->component(
+        $form->item("image", '货架样式示例')->required()->component(
             Upload::make()->width(80)->height(80)
         )->help('建议上传货架效果图，并标题内容。');
 

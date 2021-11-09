@@ -92,7 +92,7 @@ class HomeConfigController extends ContentController
         } else if ($grid_type == 2) {
             $home_jump = HomeJump::get()->toArray();
             $table_name = 'home_items';
-            $fields = ['id', 'title as name'];
+            $fields = ['id', 'name'];
             $quickOptions = null;
             $jump_info = null;
             if (count($home_jump)) {
@@ -222,7 +222,7 @@ class HomeConfigController extends ContentController
                 return \Admin::responseError('已关联');
             } else {
                 $table_name = 'home_items';
-                $fields = ['id', 'title'];
+                $fields = ['id', 'name'];
 
                 $jump_info = HomeJump::find($jump_id);
                 if ($jump_info && $jump_info['table_info']) {
