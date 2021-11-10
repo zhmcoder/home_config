@@ -148,7 +148,7 @@ class HomeConfigController extends ContentController
                 SortEdit::make()->action(config('admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=9')
             )->width(100)->sortable();
             $grid->column('third_id', "关联ID")->width(90)->sortable();
-        }else{
+        } else {
             $grid->column($fields[1], "名称");
         }
 
@@ -239,6 +239,9 @@ class HomeConfigController extends ContentController
                 $item['config_id'] = $home_config_id;
                 $item['third_id'] = $third_id;
                 $item['name'] = $table_data[$fields[1]];
+                if (count($fields) >= 3) {
+                    $item['image'] = $table_data[$fields[2]];
+                }
                 $item['jump_id'] = $jump_id;
                 $item['data_type'] = $jump_info['data_type'];
                 $item['updated_at'] = date('Y-m-d H:i:s', time());

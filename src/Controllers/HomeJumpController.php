@@ -80,11 +80,13 @@ class HomeJumpController extends ContentController
             );
 
         $remoteUrl = config('admin.route.api_prefix') . '/home/jump/form_type';
-        $form->item('form_type', '表单类型')->help('下拉选择（远程搜索）、下拉选择（多选，远程搜索）只支持行内展示')
+        $form->item('form_type', '表单类型')
+            ->help('下拉单择（连表查询）必须输入表名，字段(id，名称、图片)、查询条件(key,op,value)')
             ->component(Select::make()->filterable()->remote($remoteUrl)->ref('form_type'));
 
         $form->item("table_info", "配置项关联表")->component(
-            Input::make()->textarea(5)->placeholder('对于表单类型为单选框、多选框、下拉选择的，需在此配置对应参数。参数格式为：key=value，多个以换行分隔。也可以填写自定义的函数名称，函数名称需以getFormItemsFrom开头，返回值需与前述数据格式一致。对于下拉选择远程搜索表单类型、短文本（input，自动完成）表单类型，需在此填写后端接口URL地址，接口返回数据格式可参考文档说明。')
+            Input::make()->textarea(5)
+                ->placeholder('下拉单择（连表查询）必须输入表名。格式如下：第一行表名,如shops;第二行字段包括唯一标识、名称、图片，如id、name、image;')
         )->vif('form_type', 'selectTable');
 
         return $form;

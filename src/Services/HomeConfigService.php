@@ -9,6 +9,7 @@ use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeConfigId;
 use Andruby\HomeConfig\Models\HomeItem;
 use Andruby\HomeConfig\Models\HomeJump;
+use App\Api\Services\DataService;
 
 class  HomeConfigService
 {
@@ -38,7 +39,17 @@ class  HomeConfigService
             $config_ids = HomeConfigId::where('config_id', $config_data['id'])->get()->toArray();
             $config_items = [];
             foreach ($config_ids as $config) {
-                $config_items[] = $this->getJumpInfo($config['third_id'], $config['jump_id']);
+                if ($config['data_type'] == HomeJump::DATA_TYPE_TABLE) {
+                    $jump_info = DataService::instance()->homeJump($config['jump_id']);
+                    $table_info = table_info($jump_info['table_info']);
+                    if (method_exists($this, $table_info['table_name'])) {
+                        $fun_name = $table_info['table_name'];
+                        $item_data = $this->$fun_name($table_info['table_name'], $config['third_id']);
+                        $config_items[] = $item_data;
+                    }
+                } else {
+                    $config_items[] = $config;
+                }
             }
             $config_data['items'] = $config_items;
 
@@ -53,38 +64,4 @@ class  HomeConfigService
 
         return $homeConfigList;
     }
-
-    private function getJumpInfo($third_id, $jump_id)
-    {
-        $jump_info = HomeJump::find($jump_id);
-        $item_data = null;
-        if ($jump_info) {
-            if ($jump_info['data_type'] == HomeJump::DATA_TYPE_INPUT) {
-                $item_data = HomeItem::query()->select(['id', 'name', 'image', 'content'])->findOrFail($third_id);
-                if ($item_data) {
-                    $item_data = $item_data->toArray();
-                    $item_data['image'] = http_path($item_data['image']);
-                }
-            } else {
-                $table_info = table_info($jump_info['table_info']);
-                if (method_exists($this, $table_info['table_name'])) {
-                    $fun_name = $table_info['table_name'];
-                    $item_data = $this->$fun_name($table_info['table_name'], $third_id);
-                } else {
-                    $model = new Content($table_info['table_name']);
-                    $item_data = $model->select($table_info['fields'])->findOrFail($third_id);
-                    if ($item_data) {
-                        $item_data = $item_data->toArray();
-                    }
-                }
-            }
-        }
-        return $item_data;
-    }
-
-    protected function goods($table_name, $id)
-    {
-        return ['table_name' => $table_name, 'id' => $id];
-    }
-
 }
