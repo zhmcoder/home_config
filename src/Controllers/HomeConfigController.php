@@ -138,7 +138,6 @@ class HomeConfigController extends ContentController
 
 
         if ($grid_type == 1) {
-            $grid->column('name', "名称");
             $grid->column('jump_id', "跳转类型")
                 ->customValue(function ($row, $value) {
                     return GridCacheService::instance()->get_cache_value(HomeJump::class,
@@ -149,8 +148,12 @@ class HomeConfigController extends ContentController
             )->width(100)->sortable();
             $grid->column('third_id', "关联ID")->width(90)->sortable();
         } else {
-            $grid->column($fields[1], "名称");
+            if ($fields[1] != 'name') {
+                $fields[1] = $fields[1] . ' as name';
+            }
+            $grid->model()->select($fields);
         }
+        $grid->column('name', "名称");
 
         $grid->toolbars(function (Grid\Toolbars $toolbars) {
             $toolbars->hideCreateButton();
