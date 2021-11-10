@@ -45,6 +45,8 @@ class  HomeConfigService
                         $fun_name = $table_info['table_name'];
                         $item_data = $this->$fun_name($table_info['table_name'], $config['third_id']);
                         $config_items[] = $item_data;
+                    } else {
+                        $config_items[] = $config;
                     }
                 } else {
                     $config_items[] = $config;
