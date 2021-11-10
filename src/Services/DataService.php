@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Api\Services;
+namespace Andruby\HomeConfig\Services;
 
 
 use Andruby\HomeConfig\Models\HomeJump;

@@ -9,7 +9,6 @@ use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeConfigId;
 use Andruby\HomeConfig\Models\HomeItem;
 use Andruby\HomeConfig\Models\HomeJump;
-use App\Api\Services\DataService;
 
 class  HomeConfigService
 {
