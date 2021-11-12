@@ -38,6 +38,7 @@ class  HomeConfigService
             $config_ids = HomeConfigId::where('config_id', $config_data['id'])->get()->toArray();
             $config_items = [];
             foreach ($config_ids as $config) {
+                $config['image'] = http_path($config['image']);
                 if ($config['data_type'] == HomeJump::DATA_TYPE_TABLE) {
                     $jump_info = DataService::instance()->homeJump($config['jump_id']);
                     $table_info = table_info($jump_info['table_info']);
@@ -53,6 +54,7 @@ class  HomeConfigService
                 }
             }
             $config_data['items'] = $config_items;
+            $config_data['image'] = http_path($config_data['image']);
 
             unset($config_data['shelf_on']);
             unset($config_data['show_num']);

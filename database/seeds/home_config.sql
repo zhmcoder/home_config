@@ -122,7 +122,8 @@ CREATE TABLE `home_items` (
   `h5_url` varchar(200) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT 'H5链接',
   `order` int(11) DEFAULT '0' COMMENT '排序',
   `relation_id` int(11) DEFAULT '0' COMMENT '关联id',
-  `config_id` int(11) DEFAULT '0' COMMENT '配置货架'
+  `config_id` int(11) DEFAULT '0' COMMENT '配置货架',
+  `jump_id`     int(11) DEFAULT '0' COMMENT '跳转类型'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
