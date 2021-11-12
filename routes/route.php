@@ -15,6 +15,8 @@ Route::group([
 
     $router->get('home/config/relation_grid/{home_config_id}', 'HomeConfigController@relation_grid')->name('home.config.relation_grid');
     $router->get('home/config/relation', 'HomeConfigController@relation')->name('home.config.relation');
+    $router->get('home/config/image/{id}/edit', 'HomeConfigController@image')->name('home.config.image');
+    $router->put('home/config/save_image/{id}', 'HomeConfigController@save_image')->name('home.config.save_image');
     $router->resource('home/config', 'HomeConfigController')->names('home.config');
 
     $router->get('home/jump/form_type', 'HomeJumpController@form_type')->name('home.jump.form_type');
