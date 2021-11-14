@@ -44,13 +44,17 @@ class  HomeConfigService
                     $table_info = table_info($jump_info['table_info']);
                     if (method_exists($this, $table_info['table_name'])) {
                         $fun_name = $table_info['table_name'];
-                        $item_data = $this->$fun_name($table_info['table_name'], $config['third_id']);
+                        $item_data = $this->$fun_name($table_info, $config, $config_data);
                         $config_items[] = $item_data;
                     } else {
                         $config_items[] = $config;
                     }
                 } else {
+                    if (method_exists($this, 'home_item')) {
+                        $config = $this->home_item($config);
+                    }
                     $config_items[] = $config;
+
                 }
             }
             $config_data['items'] = $config_items;
@@ -66,5 +70,10 @@ class  HomeConfigService
         }
 
         return $homeConfigList;
+    }
+
+    protected function home_item($config)
+    {
+        return $config;
     }
 }
