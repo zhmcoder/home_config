@@ -48,6 +48,7 @@ class SearchController extends AdminController
     {
         $form = new Form(new Search());
         $form->getActions()->buttonCenter();
+        $form->labelWidth('150px');
 
         $form->item("name", "名称")->required()->inputWidth(15);
 

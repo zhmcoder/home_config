@@ -61,6 +61,8 @@ class HomeJumpController extends ContentController
     {
         $form = new Form(new HomeJump());
         $form->getActions()->buttonCenter();
+        $form->labelWidth('200px');
+
         $form->item("name", "跳转类型")->required()->inputWidth(8);
 
         $dataType = config('home_config.data_type');
@@ -82,7 +84,8 @@ class HomeJumpController extends ContentController
         $remoteUrl = config('admin.route.api_prefix') . '/home/jump/form_type';
         $form->item('form_type', '表单类型')
             ->help('下拉单择（连表查询）必须输入表名，字段(id，名称、图片)、查询条件(key,op,value)')
-            ->component(Select::make()->filterable()->remote($remoteUrl)->ref('form_type'));
+            ->component(Select::make()->filterable()->remote($remoteUrl)->ref('form_type'))
+            ->inputWidth(24);
 
         $form->item("table_info", "配置项关联表")->component(
             Input::make()->textarea(5)

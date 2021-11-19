@@ -3,20 +3,16 @@
 namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Components\Grid\SortEdit;
-use Andruby\DeepAdmin\Models\Entity;
 use Andruby\DeepAdmin\Services\GridCacheService;
 use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeJump;
 use Andruby\HomeConfig\Models\HomeConfigId;
 use Illuminate\Support\Facades\DB;
-use SmallRuralDog\Admin\Components\Form\Input;
-use SmallRuralDog\Admin\Components\Form\InputNumber;
 use SmallRuralDog\Admin\Components\Form\Radio;
 use SmallRuralDog\Admin\Components\Form\Upload;
 use SmallRuralDog\Admin\Components\Grid\Image;
 use SmallRuralDog\Admin\Components\Widgets\Card;
 use Andruby\DeepAdmin\Controllers\ContentController;
-use SmallRuralDog\Admin\Components\Widgets\Dialog;
 use SmallRuralDog\Admin\Form;
 use SmallRuralDog\Admin\Grid;
 use Andruby\DeepAdmin\Models\Content;
@@ -113,6 +109,8 @@ class HomeConfigController extends ContentController
             request()->offsetSet('jump_id', null);
 
             $grid = new Grid(new Content($table_name));
+            $grid->topTool(false);
+
             $grid->model()->select($fields);
 //            $grid->model()->where('is_show', 1)->select(['id', 'name']);
             $grid->column('id', "ID")->width(50)->sortable();
@@ -190,7 +188,7 @@ class HomeConfigController extends ContentController
             }
 
 
-        })->actionWidth($grid_type == 1 ? 60 : 40);
+        })->actionWidth($grid_type == 1 ? 100 : 40);
 
         $grid->dataUrl("admin-api/home/config/relation_grid/{$home_config_id}?grid_type=" . $grid_type);
 
@@ -263,14 +261,15 @@ class HomeConfigController extends ContentController
     public function image($isEdit = false): Form
     {
         $form = new Form(new Content('home_config_ids'));
-        $form->style('width:500px');
+        $form->labelWidth('150px');
+
         $form->isGetData(false);
         $form->dataUrl('/admin-api/home/config/image');
         $form->action('/admin-api/home/config/save_image');
 
         $form->item("image", '首页展示图片')->required()->component(
             Upload::make()->width(80)->height(80)
-        )->help('注意：不同的展示样式对图片规格有不同要求。');
+        )->help('注意：不同的展示样式对图片规格有不同要求。')->inputWidth(24);
 
         $form->getActions()->cancelButton()->afterEmit('null', null);
         return $form;

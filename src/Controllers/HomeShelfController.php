@@ -39,11 +39,14 @@ class HomeShelfController extends ContentController
     public function form($isEdit = false)
     {
         $form = new Form(new HomeShelf());
+        $form->labelWidth('200px');
         $form->getActions()->buttonCenter();
+
         $form->item("name", "货架名称")->required()->inputWidth(8);
         $form->item("image", '货架样式示例')->required()->component(
             Upload::make()->width(80)->height(80)
-        )->help('建议上传货架效果图，并标题内容。');
+        )->help('建议上传货架效果图，并标题内容。')
+            ->inputWidth(24);
 
         return $form;
     }
