@@ -88,6 +88,7 @@ class HomeConfigController extends ContentController
                     if ($jump_id == $jump_item['id']) {
                         $jump_info = $jump_item;
                     }
+
                 }
                 switch ($jump_info['form_type']) {
                     case 'input':
@@ -122,7 +123,7 @@ class HomeConfigController extends ContentController
         }
         $grid->autoHeight();
 
-        $grid->quickSearch(['name'])->quickSearchPlaceholder("名称");
+        $grid->quickSearch($fields[1])->quickSearchPlaceholder("名称");
 
         $grid->column('name', "名称");
         if ($grid_type == 1) {
