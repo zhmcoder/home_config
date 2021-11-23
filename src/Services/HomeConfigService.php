@@ -45,7 +45,9 @@ class  HomeConfigService
                     if (method_exists($this, $table_info['table_name'])) {
                         $fun_name = $table_info['table_name'];
                         $item_data = $this->$fun_name($table_info, $config, $config_data);
-                        $config_items[] = $item_data;
+                        if (!empty($item_data)) {
+                            $config_items[] = $item_data;
+                        }
                     } else {
                         $config_items[] = $config;
                     }
