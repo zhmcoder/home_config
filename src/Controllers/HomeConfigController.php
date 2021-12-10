@@ -26,6 +26,13 @@ class HomeConfigController extends ContentController
         return 'home_configs';
     }
 
+    protected function grid_list(Grid $grid)
+    {
+        $grid->dialogForm($this->form()->isDialog(), '500px')->isDrawerForm();
+
+        return $grid;
+    }
+
     protected function grid_action(Grid\Actions $actions)
     {
         $row = $actions->getRow();
