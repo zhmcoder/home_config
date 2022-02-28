@@ -118,6 +118,9 @@ class HomeConfigController extends ContentController
 
             $grid = new Grid(new Content($table_name));
             $grid->topTool(false);
+            if ($table_name == 'home_items') {
+                $grid->model()->where('jump_id', $jump_id);
+            }
 
             $grid->model()->select($fields);
 //            $grid->model()->where('is_show', 1)->select(['id', 'name']);
