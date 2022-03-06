@@ -5,12 +5,12 @@ namespace Andruby\HomeConfig\Controllers;
 use Andruby\DeepAdmin\Controllers\ContentController;
 use Andruby\HomeConfig\Models\HomeJump;
 use Illuminate\Http\Request;
-use SmallRuralDog\Admin\Components\Attrs\SelectOption;
-use SmallRuralDog\Admin\Components\Form\Input;
-use SmallRuralDog\Admin\Components\Form\Select;
-use SmallRuralDog\Admin\Components\Grid\Tag;
-use SmallRuralDog\Admin\Form;
-use SmallRuralDog\Admin\Grid;
+use Andruby\DeepAdmin\Components\Attrs\SelectOption;
+use Andruby\DeepAdmin\Components\Form\Input;
+use Andruby\DeepAdmin\Components\Form\Select;
+use Andruby\DeepAdmin\Components\Grid\Tag;
+use Andruby\DeepAdmin\Form;
+use Andruby\DeepAdmin\Grid;
 
 class HomeJumpController extends ContentController
 {

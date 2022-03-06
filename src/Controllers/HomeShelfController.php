@@ -4,10 +4,10 @@ namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Controllers\ContentController;
 use Andruby\HomeConfig\Models\HomeShelf;
-use SmallRuralDog\Admin\Components\Form\Upload;
-use SmallRuralDog\Admin\Components\Grid\Image;
-use SmallRuralDog\Admin\Form;
-use SmallRuralDog\Admin\Grid;
+use Andruby\DeepAdmin\Components\Form\Upload;
+use Andruby\DeepAdmin\Components\Grid\Image;
+use Andruby\DeepAdmin\Form;
+use Andruby\DeepAdmin\Grid;
 
 class HomeShelfController extends ContentController
 {

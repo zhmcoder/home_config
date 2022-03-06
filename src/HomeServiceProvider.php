@@ -4,7 +4,7 @@ namespace Andruby\HomeConfig;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
-use SmallRuralDog\Admin\Admin;
+use Andruby\DeepAdmin\Admin;
 
 class HomeServiceProvider extends ServiceProvider
 {

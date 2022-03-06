@@ -7,16 +7,16 @@ use Andruby\DeepAdmin\Models\Content;
 use Andruby\DeepAdmin\Models\EntityField;
 use Andruby\HomeConfig\Models\HomeJump;
 use Andruby\HomeConfig\Models\HomeItem;
-use SmallRuralDog\Admin\Components\Attrs\SelectOption;
-use SmallRuralDog\Admin\Components\Form\CSwitch;
-use SmallRuralDog\Admin\Components\Form\Input;
-use SmallRuralDog\Admin\Components\Form\Select;
-use SmallRuralDog\Admin\Components\Form\Upload;
-use SmallRuralDog\Admin\Components\Form\WangEditor;
-use SmallRuralDog\Admin\Components\Grid\Boole;
-use SmallRuralDog\Admin\Components\Grid\Image;
-use SmallRuralDog\Admin\Form;
-use SmallRuralDog\Admin\Grid;
+use Andruby\DeepAdmin\Components\Attrs\SelectOption;
+use Andruby\DeepAdmin\Components\Form\CSwitch;
+use Andruby\DeepAdmin\Components\Form\Input;
+use Andruby\DeepAdmin\Components\Form\Select;
+use Andruby\DeepAdmin\Components\Form\Upload;
+use Andruby\DeepAdmin\Components\Form\WangEditor;
+use Andruby\DeepAdmin\Components\Grid\Boole;
+use Andruby\DeepAdmin\Components\Grid\Image;
+use Andruby\DeepAdmin\Form;
+use Andruby\DeepAdmin\Grid;
 
 class HomeItemController extends ContentController
 {

@@ -8,15 +8,15 @@ use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeJump;
 use Andruby\HomeConfig\Models\HomeConfigId;
 use Illuminate\Support\Facades\DB;
-use SmallRuralDog\Admin\Components\Form\Radio;
-use SmallRuralDog\Admin\Components\Form\Upload;
-use SmallRuralDog\Admin\Components\Grid\Image;
-use SmallRuralDog\Admin\Components\Widgets\Card;
+use Andruby\DeepAdmin\Components\Form\Radio;
+use Andruby\DeepAdmin\Components\Form\Upload;
+use Andruby\DeepAdmin\Components\Grid\Image;
+use Andruby\DeepAdmin\Components\Widgets\Card;
 use Andruby\DeepAdmin\Controllers\ContentController;
-use SmallRuralDog\Admin\Form;
-use SmallRuralDog\Admin\Grid;
+use Andruby\DeepAdmin\Form;
+use Andruby\DeepAdmin\Grid;
 use Andruby\DeepAdmin\Models\Content;
-use SmallRuralDog\Admin\Layout\Row;
+use Andruby\DeepAdmin\Layout\Row;
 
 // 货架关联
 class HomeConfigController extends ContentController
@@ -47,7 +47,7 @@ class HomeConfigController extends ContentController
         $actions->setDeleteAction(new Grid\Actions\DeleteDialogAction());
     }
 
-    public function relation_grid(\SmallRuralDog\Admin\Layout\Content $content, $home_config_id = null)
+    public function relation_grid(\Andruby\DeepAdmin\Layout\Content $content, $home_config_id = null)
     {
         $grid_type = request('grid_type');
 

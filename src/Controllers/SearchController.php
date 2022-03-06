@@ -5,9 +5,9 @@ namespace Andruby\HomeConfig\Controllers;
 use Andruby\DeepAdmin\Components\Grid\SortEdit;
 use Andruby\DeepAdmin\Components\Grid\SortUpDown;
 use Andruby\HomeConfig\Models\Search;
-use SmallRuralDog\Admin\Controllers\AdminController;
-use SmallRuralDog\Admin\Form;
-use SmallRuralDog\Admin\Grid;
+use Andruby\DeepAdmin\Controllers\AdminController;
+use Andruby\DeepAdmin\Form;
+use Andruby\DeepAdmin\Grid;
 
 class SearchController extends AdminController
 {

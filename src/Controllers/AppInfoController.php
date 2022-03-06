@@ -3,7 +3,7 @@
 namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Controllers\ContentController;
-use SmallRuralDog\Admin\Grid;
+use Andruby\DeepAdmin\Grid;
 
 class AppInfoController extends ContentController
 {
