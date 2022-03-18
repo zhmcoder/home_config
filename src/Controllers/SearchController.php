@@ -31,8 +31,8 @@ class SearchController extends AdminController
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
         $grid->column("name", "名称");
         $grid->column('sort', '排序')->component(
-        //SortUpDown::make(100)->setSortAction(config('admin.route.api_prefix') . '/entities/content/sort_up_down?entity_id=7')
-            SortEdit::make()->action(config('admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=7')
+        //SortUpDown::make(100)->setSortAction(config('deep_admin.route.api_prefix') . '/entities/content/sort_up_down?entity_id=7')
+            SortEdit::make()->action(config('deep_admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=7')
         )->sortable();
 
         $grid->toolbars(function (Grid\Toolbars $toolbars) {
