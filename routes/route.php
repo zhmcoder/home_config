@@ -6,7 +6,7 @@ Route::group([
     'domain' => config('deep_admin.route.domain'),
     'prefix' => config('deep_admin.route.api_prefix'),
     'namespace' => '\Andruby\HomeConfig\Controllers',
-    'middleware' => config('admin.route.middleware')
+    'middleware' => config('deep_admin.route.middleware')
 ], function (Router $router) {
     // 首页配置
     $router->resource('home/item', 'HomeItemController')->names('home.items');

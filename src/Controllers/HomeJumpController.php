@@ -81,7 +81,7 @@ class HomeJumpController extends ContentController
                     })
             );
 
-        $remoteUrl = config('admin.route.api_prefix') . '/home/jump/form_type';
+        $remoteUrl = config('deep_admin.route.api_prefix') . '/home/jump/form_type';
         $form->item('form_type', '表单类型')
             ->help('下拉单择（连表查询）必须输入表名，字段(id，名称、图片)、查询条件(key,op,value)')
             ->component(Select::make()->filterable()->remote($remoteUrl)->ref('form_type'))
