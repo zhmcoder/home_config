@@ -76,6 +76,9 @@ class  HomeConfigService
 
     protected function home_item($config)
     {
+        $homeItem = HomeItem::query()->find($config['third_id']);
+
+        $config['content'] = $homeItem['content'] ?? '';
         return $config;
     }
 }
