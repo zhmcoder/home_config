@@ -2,6 +2,8 @@
 
 namespace Andruby\HomeConfig\Controllers;
 
+use Andruby\DeepAdmin\Components\Attrs\SelectOption;
+use Andruby\DeepAdmin\Components\Form\Select;
 use Andruby\DeepAdmin\Controllers\ContentController;
 use Andruby\HomeConfig\Models\HomeShelf;
 use Andruby\DeepAdmin\Components\Form\Upload;
@@ -29,6 +31,13 @@ class HomeShelfController extends ContentController
 
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
         $grid->column("name", "货架名称");
+        $grid->column('type', '类型')->customValue(function ($row) {
+            if (key_exists($row['type'], HomeShelf::TYPE)) {
+                return HomeShelf::TYPE[$row['type']];
+            } else {
+                return $row['type'];
+            }
+        });
         $grid->column("image", "货架样式示例")->component(
             Image::make()->size(50, 50)->preview()
         )->align("center");
@@ -43,6 +52,15 @@ class HomeShelfController extends ContentController
         $form->getActions()->buttonCenter();
 
         $form->item("name", "货架名称")->required()->inputWidth(8);
+
+        $options = [];
+        foreach (HomeShelf::TYPE as $key => $value) {
+            $options[] = SelectOption::make($key, $value);
+        }
+        $form->item("type", "类型")->component(
+            Select::make()->options($options)->clearable()->filterable()
+        );
+
         $form->item("image", '货架样式示例')->required()->component(
             Upload::make()->width(80)->height(80)
         )->help('建议上传货架效果图，并标题内容。')

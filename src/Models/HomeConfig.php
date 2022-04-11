@@ -29,4 +29,10 @@ class HomeConfig extends Model
         2 => 'home_configs',
         3 => 'goods',
     ];
+
+    public function homeShelf()
+    {
+        return $this->hasOne(HomeShelf::class, 'id', 'shelf_id')
+            ->select(['id', 'type', 'name']);
+    }
 }

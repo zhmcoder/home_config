@@ -31,6 +31,7 @@ class  HomeConfigService
                         $query->where('publish_down', null);
                     });
             })
+            ->with('homeShelf')
             ->orderBy('sort', 'asc')->orderBy('id', 'desc')->get()->toArray();
 
         foreach ($homeConfigList as &$config_data) {
@@ -61,6 +62,7 @@ class  HomeConfigService
             }
             $config_data['items'] = $config_items;
             $config_data['image'] = http_path($config_data['image']);
+            $config_data['shelf_type'] = $config_data['home_shelf']['type'];
 
             unset($config_data['shelf_on']);
             unset($config_data['show_num']);
@@ -69,6 +71,7 @@ class  HomeConfigService
             unset($config_data['publish_up']);
             unset($config_data['publish_down']);
             unset($config_data['show_app']);
+            unset($config_data['home_shelf']);
         }
 
         return $homeConfigList;
