@@ -79,11 +79,11 @@ class  HomeConfigService
 
     protected function home_item($config)
     {
-        $homeItem = HomeItem::query()->find($config['third_id']);
+        // $homeItem = HomeItem::query()->find($config['third_id']);
 
-        $config['content'] = $homeItem['content'] ?? '';
+        // $config['content'] = $homeItem['content'] ?? '';
         $config['jump_type'] = 'text';
-        
+
         return $config;
     }
 }
