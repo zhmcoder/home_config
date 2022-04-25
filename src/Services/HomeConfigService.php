@@ -35,10 +35,13 @@ class  HomeConfigService
             ->orderBy('sort', 'asc')->orderBy('id', 'desc')->get()->toArray();
 
         foreach ($homeConfigList as &$config_data) {
-
             $config_ids = HomeConfigId::where('config_id', $config_data['id'])->get()->toArray();
             $config_items = [];
-            foreach ($config_ids as $config) {
+            $configIdsCount = count($config_ids);
+            $showCount = $configIdsCount > $config_data['show_num'] ? $config_data['show_num'] : $configIdsCount;
+            for ($i = 0; $i < $showCount; $i++) {
+                $config = $config_ids[$i];
+
                 $config['image'] = http_path($config['image']);
                 if ($config['data_type'] == HomeJump::DATA_TYPE_TABLE) {
                     $jump_info = DataService::instance()->homeJump($config['jump_id']);
@@ -57,7 +60,6 @@ class  HomeConfigService
                         $config = $this->home_item($config);
                     }
                     $config_items[] = $config;
-
                 }
             }
             $config_data['items'] = $config_items;
@@ -65,7 +67,6 @@ class  HomeConfigService
             $config_data['shelf_type'] = $config_data['home_shelf']['type'];
 
             unset($config_data['shelf_on']);
-            unset($config_data['show_num']);
             unset($config_data['sort']);
             unset($config_data['column_count']);
             unset($config_data['publish_up']);
