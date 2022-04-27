@@ -196,6 +196,8 @@ class HomeConfigController extends ContentController
 //            $row = $actions->getRow();
             if ($grid_type == 1) {
                 $actions->editAction()->content('图片');
+            } else {
+                $actions->hideEditAction();
             }
 
 
