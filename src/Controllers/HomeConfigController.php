@@ -81,7 +81,7 @@ class HomeConfigController extends ContentController
             $grid->dialogForm($this->image(true)->isDialog());
             $grid->model()->where('config_id', $home_config_id);
 
-            $grid->defaultSort('sort', 'asc');
+            $grid->defaultSort('sort', 'desc');
             $grid->column('id', "ID")->width(60)->sortable();
         } else if ($grid_type == 2) {
             $home_jump = HomeJump::get()->toArray();
@@ -143,7 +143,7 @@ class HomeConfigController extends ContentController
                         'home_jump_' . $value, $value, 'id', 'name');
                 })->width(70);
             $grid->column('sort', '排序')->component(
-                SortEdit::make()->action(config('deep_admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=9')
+                SortEdit::make()->action(config('deep_admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=10')
             )->width(95)->sortable();
             $grid->column('third_id', "关联ID")->width(60);
 

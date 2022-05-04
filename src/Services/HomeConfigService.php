@@ -32,10 +32,11 @@ class  HomeConfigService
                     });
             })
             ->with('homeShelf')
-            ->orderBy('sort', 'asc')->orderBy('id', 'desc')->get()->toArray();
+            ->orderByDesc('sort')->orderByDesc('id')
+            ->get()->toArray();
 
         foreach ($homeConfigList as &$config_data) {
-            $config_ids = HomeConfigId::where('config_id', $config_data['id'])->get()->toArray();
+            $config_ids = HomeConfigId::where('config_id', $config_data['id'])->orderByDesc('sort')->orderByDesc('id')->get()->toArray();
             $config_items = [];
             $configIdsCount = count($config_ids);
             $showCount = $configIdsCount > $config_data['show_num'] ? $config_data['show_num'] : $configIdsCount;
