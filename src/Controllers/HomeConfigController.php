@@ -2,11 +2,14 @@
 
 namespace Andruby\HomeConfig\Controllers;
 
+use Andruby\DeepAdmin\Components\Form\Select;
 use Andruby\DeepAdmin\Components\Grid\SortEdit;
 use Andruby\DeepAdmin\Services\GridCacheService;
 use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeJump;
 use Andruby\HomeConfig\Models\HomeConfigId;
+use Andruby\HomeConfig\Services\AppInfoService;
+use App\Models\AdminRoleUser;
 use Illuminate\Support\Facades\DB;
 use Andruby\DeepAdmin\Components\Form\Radio;
 use Andruby\DeepAdmin\Components\Form\Upload;
@@ -28,18 +31,44 @@ class HomeConfigController extends ContentController
 
     protected function grid_list(Grid $grid)
     {
+        $grid->model()->where(function ($query) {
+            $user = \Admin::user();
+            if ($user['role_id'] > AdminRoleUser::ROLE_ADMINISTRATOR) {
+                $showApp = json_decode($user['show_app'], true);
+                foreach ($showApp as $appId) {
+                    $query->orWhere('show_app', 'like', '%"' . $appId . '"%');
+                }
+            }
+        });
+
         $grid->dialogForm($this->form()->isDialog(), '500px')->isDrawerForm();
 
+        $grid->filter(function (Grid\Filter $filter) {
+            $filter->like('show_app', '展示app')->component(
+                Select::make()->options(function () {
+                    return AppInfoService::instance()->app_info();
+                })->clearable()->filterable()
+            );
+        });
+
         return $grid;
+    }
+
+    protected function form_add(Form $form, $isEdit)
+    {
+        $form->item('show_app', '展示app')->component(
+            Select::make()->options(function () {
+                return AppInfoService::instance()->app_info();
+            })->clearable()->filterable()->multiple()
+        )->inputWidth(24);
+
+        return $form;
     }
 
     protected function grid_action(Grid\Actions $actions)
     {
         $row = $actions->getRow();
 
-//        $title = HomeConfig::SHELF_TYPE[$row['shelf_type']];
-//        $title = GridCacheService::instance()->get_cache_value(HomeShelf::class,
-//            'home_shelf_' . $row['shelf_id'], $row['shelf_type'], 'id', 'name');
         $actions->add(Grid\Actions\ActionButton::make('关联数据')
             ->handler(Grid\Actions\ActionButton::HANDLER_ROUTE)
             ->uri('/home/config/relation_grid/{id}' . '?timestamp=' . time()));
