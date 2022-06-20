@@ -4,6 +4,9 @@ namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Controllers\ContentController;
 use Andruby\HomeConfig\Models\HomeJump;
+use Andruby\HomeConfig\Services\AppInfoService;
+use App\Admin\Services\GridCacheService;
+use App\Models\AdminRoleUser;
 use Illuminate\Http\Request;
 use Andruby\DeepAdmin\Components\Attrs\SelectOption;
 use Andruby\DeepAdmin\Components\Form\Input;
@@ -17,8 +20,20 @@ class HomeJumpController extends ContentController
     public function grid()
     {
         $grid = new Grid(new HomeJump());
+
+        $grid->model()->where(function ($query) {
+            $user = \Admin::user();
+            if ($user['role_id'] > AdminRoleUser::ROLE_ADMINISTRATOR) {
+                $showApp = json_decode($user['show_app'], true);
+                foreach ($showApp as $appId) {
+                    $query->orWhere('show_app', 'like', '%"' . $appId . '"%');
+                }
+            }
+        });
+
         $grid->addDialogForm($this->form()->isDialog()->className('p-15'), '800px');
         $grid->editDialogForm($this->form(true)->isDialog()->className('p-15'), '800px');
+
         $grid->actions(function (Grid\Actions $actions) {
             $row = $actions->getRow();
             if ($row['data_type'] == 1) {
@@ -29,15 +44,14 @@ class HomeJumpController extends ContentController
 
         })->actionWidth(100)->actionFixed('right');
 
-        $grid->pageBackground()
-            ->defaultSort('id', 'desc')
-            ->quickSearch(['name'])
-            ->stripe(true)
-            ->fit(true)
-            ->perPage(env('PER_PAGE', 15))
-            ->size(env('TABLE_SIZE', ''))
-            ->border(env('TABLE_BORDER', false))
-            ->emptyText("暂无数据");
+        $grid->quickSearch(['name']);
+        $grid->filter(function (Grid\Filter $filter) {
+            $filter->like('show_app', '展示app')->component(
+                Select::make()->options(function () {
+                    return AppInfoService::instance()->app_info();
+                })->clearable()->filterable()
+            );
+        });
 
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
         $grid->column("name", "类型名称");
@@ -53,6 +67,14 @@ class HomeJumpController extends ContentController
             ->customValue(function ($row, $value) use ($dataType) {
                 return $dataType[$value];
             })->component(Tag::make()->type($dataType));
+
+        $grid->column('show_app', '展示app')->customValue(function ($row, $value) {
+            $appInfo = [];
+            foreach ($value as $appId) {
+                $appInfo[] = GridCacheService::instance()->app_name($appId);
+            }
+            return $appInfo;
+        })->component(Tag::make())->width(200);
 
         return $grid;
     }
@@ -91,6 +113,12 @@ class HomeJumpController extends ContentController
             Input::make()->textarea(5)
                 ->placeholder('下拉单择（连表查询）必须输入表名。格式如下：第一行表名,如shops;第二行字段包括唯一标识、名称、图片，如id、name、image;')
         )->vif('form_type', 'selectTable');
+
+        $form->item('show_app', '展示app')->component(
+            Select::make()->options(function () {
+                return AppInfoService::instance()->app_info();
+            })->clearable()->filterable()->multiple()
+        )->inputWidth(24);
 
         return $form;
     }

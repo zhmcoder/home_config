@@ -111,7 +111,7 @@ class HomeConfigController extends ContentController
             $grid->model()->where('config_id', $home_config_id);
 
             $grid->defaultSort('sort', 'desc');
-            $grid->column('id', "ID")->width(60)->sortable();
+            $grid->column('id', "ID")->width(80)->sortable();
         } else if ($grid_type == 2) {
             $home_jump = HomeJump::get()->toArray();
             $table_name = 'home_items';
@@ -153,7 +153,7 @@ class HomeConfigController extends ContentController
 
             $grid->model()->select($fields);
 //            $grid->model()->where('is_show', 1)->select(['id', 'name']);
-            $grid->column('id', "ID")->width(50)->sortable();
+            $grid->column('id', "ID")->width(80)->sortable();
 
             if ($quickOptions) {
                 $grid->quickFilter()->filterKey('jump_id')
@@ -183,7 +183,15 @@ class HomeConfigController extends ContentController
             if ($fields[1] != 'name') {
                 $fields[1] = $fields[1] . ' as name';
             }
-            $grid->model()->select($fields);
+            $grid->model()->where(function ($query) {
+                $user = \Admin::user();
+                if ($user['role_id'] > AdminRoleUser::ROLE_ADMINISTRATOR) {
+                    $showApp = json_decode($user['show_app'], true);
+                    foreach ($showApp as $appId) {
+                        $query->orWhere('show_app', 'like', '%"' . $appId . '"%');
+                    }
+                }
+            })->select($fields);
         }
 
         $grid->toolbars(function (Grid\Toolbars $toolbars) {
