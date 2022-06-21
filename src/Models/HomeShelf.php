@@ -16,6 +16,7 @@ class HomeShelf extends Model
     protected $casts = [
         'created_at' => "Y-m-d H:i:s",
         'updated_at' => "Y-m-d H:i:s",
+        'show_app' => 'array',
     ];
 
     const TYPE = [

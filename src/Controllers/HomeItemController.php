@@ -2,6 +2,7 @@
 
 namespace Andruby\HomeConfig\Controllers;
 
+use Andruby\DeepAdmin\Components\Grid\Tag;
 use Andruby\DeepAdmin\Controllers\ContentController;
 use Andruby\DeepAdmin\Models\Content;
 use Andruby\DeepAdmin\Models\EntityField;
@@ -17,6 +18,9 @@ use Andruby\DeepAdmin\Components\Grid\Boole;
 use Andruby\DeepAdmin\Components\Grid\Image;
 use Andruby\DeepAdmin\Form;
 use Andruby\DeepAdmin\Grid;
+use Andruby\HomeConfig\Services\AppInfoService;
+use App\Admin\Services\GridCacheService;
+use App\Models\AdminRoleUser;
 
 class HomeItemController extends ContentController
 {
@@ -24,20 +28,29 @@ class HomeItemController extends ContentController
     {
         $config_id = request('config_id', 1);
         $grid = new Grid(new HomeItem());
+
         $grid->model()->where('config_id', $config_id);
+        $grid->model()->where(function ($query) {
+            $user = \Admin::user();
+            if ($user['role_id'] > AdminRoleUser::ROLE_ADMINISTRATOR) {
+                $showApp = json_decode($user['show_app'], true);
+                foreach ($showApp as $appId) {
+                    $query->orWhere('show_app', 'like', '%"' . $appId . '"%');
+                }
+            }
+        });
 
         $grid->addDialogForm($this->form()->isDialog()->className('p-15'), '800px');
         $grid->editDialogForm($this->form(true)->isDialog()->className('p-15'), '800px');
 
-        $grid->pageBackground()
-            ->defaultSort('id', 'desc')
-            ->quickSearch(['name'])
-            ->stripe(true)
-            ->fit(true)
-            ->perPage(env('PER_PAGE', 15))
-            ->size(env('TABLE_SIZE', ''))
-            ->border(env('TABLE_BORDER', false))
-            ->emptyText("暂无数据");
+        $grid->quickSearch(['name']);
+        $grid->filter(function (Grid\Filter $filter) {
+            $filter->like('show_app', '展示app')->component(
+                Select::make()->options(function () {
+                    return AppInfoService::instance()->app_info();
+                })->clearable()->filterable()
+            );
+        });
 
         $grid->column("id", "序号")->width(80)->align('center')->sortable();
         $grid->column("name", "标题")->sortable();
@@ -57,6 +70,14 @@ class HomeItemController extends ContentController
 //            return GridCacheService::instance()->get_cache_value(HomeJump::class,
 //                'home_config_type_' . $value, $value, 'config_value', 'name');;
 //        });
+
+        $grid->column('show_app', '展示app')->customValue(function ($row, $value) {
+            $appInfo = [];
+            foreach ($value as $appId) {
+                $appInfo[] = GridCacheService::instance()->app_name($appId);
+            }
+            return $appInfo;
+        })->component(Tag::make())->width(200);
 
         $grid->toolbars(function (Grid\Toolbars $toolbars) {
             $toolbars->createButton()->content("添加");
@@ -127,6 +148,12 @@ class HomeItemController extends ContentController
         $form->item('config_id', '')->component(
             Input::make($config_id)->type('hidden')
         )->hideLabel();
+
+        $form->item('show_app', '展示app')->component(
+            Select::make()->options(function () {
+                return AppInfoService::instance()->app_info();
+            })->clearable()->filterable()->multiple()
+        )->inputWidth(24);
 
         return $form;
     }

@@ -13,13 +13,12 @@ class HomeJump extends Model
 
     protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
 
-    const DATA_TYPE_INPUT = 1;
-    const DATA_TYPE_TABLE = 2;
-
-
     protected $casts = [
         'created_at' => "Y-m-d H:i:s",
         'updated_at' => "Y-m-d H:i:s",
+        'show_app' => 'array',
     ];
 
+    const DATA_TYPE_INPUT = 1;
+    const DATA_TYPE_TABLE = 2;
 }
