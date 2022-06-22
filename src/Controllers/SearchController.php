@@ -77,7 +77,7 @@ class SearchController extends AdminController
             Select::make()->options(function () {
                 return AppInfoService::instance()->app_info();
             })->clearable()->filterable()->multiple()
-        )->inputWidth(24);
+        )->inputWidth(24)->required(true, 'array');
 
         return $form;
     }
