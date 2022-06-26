@@ -25,8 +25,8 @@ class AppInfoController extends ContentController
             }
         });
 
-        $grid->addDialogForm($this->form()->isDialog()->className('p-15'));
-        $grid->editDialogForm($this->form(true)->isDialog()->className('p-15'));
+        $grid->addDialogForm($this->form()->isDialog()->className('p-15'), '700px');
+        $grid->editDialogForm($this->form(true)->isDialog()->className('p-15'), '700px');
 
         $grid->toolbars(function (Grid\Toolbars $toolbars) {
             $toolbars->createButton()->content("添加应用");
