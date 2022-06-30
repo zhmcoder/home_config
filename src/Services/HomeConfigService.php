@@ -81,10 +81,16 @@ class  HomeConfigService
 
     protected function home_item($config)
     {
-        // $homeItem = HomeItem::query()->find($config['third_id']);
+        $homeItem = HomeItem::query()->find($config['third_id']);
 
-        // $config['content'] = $homeItem['content'] ?? '';
-        $config['jump_type'] = 'text';
+        // todo 是否是链接
+        $content = isset($homeItem['content']) ?? '';
+        if (substr($content, 0, 3) == 'http') {
+            $config['content'] = $content;
+            $config['jump_type'] = 'link';
+        } else {
+            $config['jump_type'] = 'text';
+        }
 
         return $config;
     }
