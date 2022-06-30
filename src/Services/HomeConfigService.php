@@ -85,7 +85,7 @@ class  HomeConfigService
 
         // todo 是否是链接
         $content = isset($homeItem['content']) ?? '';
-        if (substr($content, 0, 3) == 'http') {
+        if (substr($content, 0, 4) == 'http') {
             $config['content'] = $content;
             $config['jump_type'] = 'link';
         } else {
