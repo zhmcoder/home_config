@@ -321,7 +321,9 @@ class HomeConfigController extends ContentController
             Upload::make()->width(80)->height(80)
         )->help('注意：不同的展示样式对图片规格有不同要求。')->inputWidth(24);
 
-        $form->getActions()->cancelButton()->afterEmit('null', null);
+        $form->getActions()->cancelButton()->afterEmit('null', null)->isDialog();
+        $form->getActions()->submitButton()->afterEmit('null', null)->isDialog();
+
         return $form;
     }
 
