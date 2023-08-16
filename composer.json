@@ -16,7 +16,8 @@
         "php": "^7.1|^8.1",
         "illuminate/support": "~5|~6|~7|~8|~9|~10",
         "illuminate/database": "~5|~6|~7|~8|~9|~10",
-        "illuminate/auth": "~5|~6|~7|~8|~9|~10"
+        "illuminate/auth": "~5|~6|~7|~8|~9|~10",
+        "laravel/framework": "~5|~6|~7|~8|~9|~10"
     },
     "autoload": {
         "psr-4": {
