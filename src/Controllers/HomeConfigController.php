@@ -4,6 +4,7 @@ namespace Andruby\HomeConfig\Controllers;
 
 use Andruby\DeepAdmin\Components\Form\Select;
 use Andruby\DeepAdmin\Components\Grid\SortEdit;
+use Andruby\DeepAdmin\Models\Entity;
 use Andruby\DeepAdmin\Services\GridCacheService;
 use Andruby\HomeConfig\Models\HomeConfig;
 use Andruby\HomeConfig\Models\HomeJump;
@@ -79,7 +80,7 @@ class HomeConfigController extends ContentController
     public function relation_grid(\Andruby\DeepAdmin\Layout\Content $content, $home_config_id = null)
     {
         $grid_type = request('grid_type');
-        $sortEntityId = request('sort_entity_id', 10);
+        $sortEntityId = request('sort_entity_id', Entity::query()->where(['table_name' => 'home_config_ids'])->value('id') ?? 10);
 
         $grid_left = $this->column_grid(1, $home_config_id, $sortEntityId);
         $grid_right = $this->column_grid(2, $home_config_id, $sortEntityId);
