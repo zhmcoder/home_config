@@ -79,9 +79,10 @@ class HomeConfigController extends ContentController
     public function relation_grid(\Andruby\DeepAdmin\Layout\Content $content, $home_config_id = null)
     {
         $grid_type = request('grid_type');
+        $sortEntityId = request('sort_entity_id', 10);
 
-        $grid_left = $this->column_grid(1, $home_config_id);
-        $grid_right = $this->column_grid(2, $home_config_id);
+        $grid_left = $this->column_grid(1, $home_config_id, $sortEntityId);
+        $grid_right = $this->column_grid(2, $home_config_id, $sortEntityId);
 
         $homeConfig = HomeConfig::query()->find($home_config_id);
 
@@ -101,7 +102,7 @@ class HomeConfigController extends ContentController
         }
     }
 
-    private function column_grid($grid_type, $home_config_id)
+    private function column_grid($grid_type, $home_config_id, $sortEntityId = 10)
     {
         $jump_id = request('jump_id', null);
         $fields = ['id', 'name'];
@@ -172,7 +173,7 @@ class HomeConfigController extends ContentController
                         'home_jump_' . $value, $value, 'id', 'name');
                 })->width(70);
             $grid->column('sort', '排序')->component(
-                SortEdit::make()->action(config('deep_admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=10')
+                SortEdit::make()->action(config('deep_admin.route.api_prefix') . '/entities/content/grid_sort_change?entity_id=' . $sortEntityId)
             )->width(95)->sortable();
             $grid->column('third_id', "关联ID")->width(60);
 
