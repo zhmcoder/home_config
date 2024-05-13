@@ -109,7 +109,7 @@ class HomeConfigController extends ContentController
         $fields = ['id', 'name'];
         if ($grid_type == 1) {
             $grid = new Grid(new Content('home_config_ids'));
-            $grid->dialogForm($this->image(true)->isDialog());
+            $grid->dialogForm($this->image()->isDialog());
             $grid->model()->where('config_id', $home_config_id);
 
             $grid->defaultSort('sort', 'desc');
@@ -315,7 +315,14 @@ class HomeConfigController extends ContentController
         $form = new Form(new Content('home_config_ids'));
         $form->labelWidth('150px');
 
-        $form->isGetData(false);
+        $form->isDialog();
+
+        $form->isGetData($isEdit);
+        $id = explode('/', request()->path())[4] ?? 0;
+        if ($isEdit && $id) {
+            $form->editData($id);
+        }
+
         $form->dataUrl('/admin-api/home/config/image');
         $form->action('/admin-api/home/config/save_image');
 
@@ -323,7 +330,6 @@ class HomeConfigController extends ContentController
             Upload::make()->width(80)->height(80)
         )->help('注意：不同的展示样式对图片规格有不同要求。')->inputWidth(24);
 
-        $form->getActions()->cancelButton()->afterEmit('null', null);
         return $form;
     }
 
